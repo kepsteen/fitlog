@@ -5,17 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AJAX Project</title>
     <link rel="icon" href="images/logo.png" />
+    <script
+      src="https://kit.fontawesome.com/b59a37eed7.js"
+      crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet" />
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/layout.css" />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <header>
-      <nav>
-        <img src="images/Fitlog.png" alt="" />
-      </nav>
+      <div class="navbar flex space-between">
+        <img class="fitlog" src="images/logo.svg" alt="" />
+        <div class="menu flex justify-center align-center">
+          <a href="#"
+            ><i class="fa-solid fa-bars fa-xl hamburger" style="color: #fff"></i
+          ></a>
+        </div>
+        <dialog class="nav-links flex flex-col align-end hidden">
+          <a href="#"
+            ><i class="fa-solid fa-x fa-xl" style="color: #ffffff"></i
+          ></a>
+          <p>link1</p>
+          <p>link2</p>
+          <p>link3</p>
+        </dialog>
+      </div>
     </header>
-    <main></main>
+    <main class="">
+      <section class="home flex flex-col align-center" data-view="home">
+        <h1>Search For Exercises</h1>
+        <form action="" id="search-form">
+          <label for="search"></label>
+          <input
+            type="text"
+            class="search-bar"
+            id="exercise-search"
+            placeholder="Exercise" />
+          <button type="submit" class="search-btn">Search</button>
+        </form>
+        <img
+          src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
+          alt="" />
+      </section>
+    </main>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
   </body>

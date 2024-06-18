@@ -1,11 +1,9 @@
+'use strict';
 const rootURL = 'https://wger.de/api/v2/';
 console.log(rootURL);
-
-const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
-
+const $searchForm = document.querySelector('#search-form');
 if (!$searchForm) throw new Error('no search form found');
-
-async function fetchExerciseSearchData(term: string): Promise<void> {
+async function fetchExerciseSearchData(term) {
   try {
     const response = await fetch(
       `https://wger.de/api/v2/exercise/search/?language=2&term=${term}&limit=100`,
@@ -19,14 +17,9 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     console.log(error);
   }
 }
-
-$searchForm.addEventListener('submit', (event: Event) => {
+$searchForm.addEventListener('submit', (event) => {
   event.preventDefault();
-
-  const $exerciseSearch = document.querySelector(
-    '#exercise-search',
-  ) as HTMLInputElement;
+  const $exerciseSearch = document.querySelector('#exercise-search');
   if (!$exerciseSearch) throw new Error('no exercise search input found');
-
   fetchExerciseSearchData($exerciseSearch.value);
 });

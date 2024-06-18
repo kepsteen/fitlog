@@ -1,0 +1,86 @@
+h1,
+h2,
+h3 {
+  font-family: 'Archivo Black', serif;
+  font-size: 1.75rem;
+  color: #000814;
+}
+
+header {
+  position: relative;
+}
+
+p {
+  font-family: Archivo, serif;
+}
+
+input {
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+}
+
+input::placeholder {
+  padding-left: 10px;
+  color: #c4c4c4;
+}
+
+.navbar {
+  background-color: #001d3d;
+}
+
+.menu {
+  width: 50px;
+  border-radius: 5px;
+  border: 1px solid rgb(22, 94, 167);
+  background-color: #003566;
+  margin: auto 10px auto 0;
+}
+
+.fitlog {
+  padding: 10px;
+}
+
+.search-bar {
+  height: 30px;
+  width: 250px;
+}
+
+.search-btn {
+  height: 30px;
+  font-size: 1.1rem;
+  width: 80px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffc300;
+  color: white;
+}
+
+.home {
+  gap: 100px;
+}
+
+.nav-links {
+  width: 180px;
+  position: absolute;
+  right: 0;
+  left: auto;
+  border: none;
+  background-color: #003566;
+  color: white;
+}
+
+.nav-links i {
+  margin-bottom: 20px;
+}
+
+@media only screen and (width <= 576px) {
+  .menu > i {
+    display: flex;
+  }
+}
+
+@media only screen and (width >= 576px) {
+  .menu {
+    display: none;
+  }
+}
