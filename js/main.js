@@ -1,6 +1,4 @@
 'use strict';
-const rootURL = 'https://wger.de/api/v2';
-console.log(rootURL);
 const $searchForm = document.querySelector('#search-form');
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -31,7 +29,7 @@ function renderExercises(exerciseObj) {
   $cardText.appendChild($cardCaption);
   $card.appendChild($cardImg);
   $card.appendChild($cardText);
-  $cardList?.appendChild($card);
+  return $card;
 }
 async function fetchExerciseDetails(baseId, id, img) {
   const response = await fetch(
@@ -72,7 +70,7 @@ async function fetchExerciseDetails(baseId, id, img) {
     secondaryMuscles,
     baseId,
     image: img,
-    id: id,
+    id,
   };
   return exerciseObj;
 }
@@ -97,7 +95,9 @@ async function fetchExerciseSearchData(term) {
       }
     }
     if (exerciseObjArr.length > 0) {
-      exerciseObjArr.forEach((element) => renderExercises(element));
+      exerciseObjArr.forEach((element) => {
+        $cardList.appendChild(renderExercises(element));
+      });
       $noResults?.classList.add('hidden');
     } else {
       $noResults?.classList.remove('hidden');

@@ -20,9 +20,6 @@ interface Exercise {
   equipment?: Equipment;
 }
 
-const rootURL = 'https://wger.de/api/v2';
-console.log(rootURL);
-
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -39,7 +36,7 @@ if (!$cardList) throw new Error('no card list found');
 if (!$header) throw new Error('no header found');
 if (!$noResults) throw new Error('no results not found');
 
-function renderExercises(exerciseObj: Exercise): void {
+function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex');
 
@@ -58,7 +55,7 @@ function renderExercises(exerciseObj: Exercise): void {
   $cardText.appendChild($cardCaption);
   $card.appendChild($cardImg);
   $card.appendChild($cardText);
-  $cardList?.appendChild($card);
+  return $card;
 }
 
 async function fetchExerciseDetails(
@@ -130,7 +127,9 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
       }
     }
     if (exerciseObjArr.length > 0) {
-      exerciseObjArr.forEach((element) => renderExercises(element));
+      exerciseObjArr.forEach((element) => {
+        $cardList.appendChild(renderExercises(element));
+      });
       $noResults?.classList.add('hidden');
     } else {
       $noResults?.classList.remove('hidden');

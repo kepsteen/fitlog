@@ -20,8 +20,8 @@
   <body>
     <header>
       <div class="navbar flex space-between">
-        <div class="logo flex-grow">
-          <img class="fitlog" src="images/logo.svg" alt="" />
+        <div class="logo flex flex-grow align-center">
+          <img class="fitlog" src="images/logo.svg" alt="fitlog log" />
         </div>
         <nav class="nav-links">
           <ul class="">
@@ -37,6 +37,10 @@
           <a href="#"
             ><i class="fa-solid fa-x fa-xl" style="color: #ffffff"></i
           ></a>
+          <a href="#"
+            >Exercises
+            <i class="fa-solid fa-dumbbell" style="color: #ffffff"></i
+          ></a>
         </dialog>
       </div>
     </header>
@@ -49,8 +53,8 @@
           alt=""
           id="muscle-man-half" />
         <div class="muscle-men flex align-start hidden">
-          <img src="images/muscle-man-full1.png" alt="" />
-          <img src="images/muscle-man-full2.png" alt="" />
+          <img src="images/muscle-man-full1.png" alt="muscle man 1" />
+          <img src="images/muscle-man-full2.png" alt="muscle man 2" />
         </div>
       </section>
       <section
@@ -66,23 +70,12 @@
             placeholder="Exercise" />
           <button type="submit" class="yellow-btn">Search</button>
         </form>
-        <div class="card-list flex flex-col align-center" id="card-list">
-          <!-- <div class="card flex">
-            <img
-              src="https://wger.de/media/exercise-images/129/Standing-biceps-curl-1.png"
-              alt=""
-              class="card-img" />
-            <div class="card-text">
-              <h3>Exercise Name</h3>
-              <p>Exercise description</p>
-            </div>
-          </div> -->
-        </div>
+        <div class="card-list flex wrap align-center" id="card-list"></div>
         <div class="no-results flex flex-col align-center hidden">
           <p class="" style="">No Results Found.</p>
           <img
             src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
-            alt="" />
+            alt="muscle man half" />
         </div>
       </section>
     </main>

@@ -33,6 +33,12 @@ input::placeholder {
   color: #c4c4c4;
 }
 
+a {
+  text-decoration: none;
+  color: white;
+  font-family: 'Archivo Black', serif;
+}
+
 .navbar {
   background-color: #001d3d;
 }
@@ -59,6 +65,11 @@ input::placeholder {
   color: white;
 }
 
+.hamburger-links > a {
+  font-family: Archivo, serif;
+  font-size: 1rem;
+}
+
 .hamburger-links i {
   margin-bottom: 20px;
 }
@@ -71,9 +82,6 @@ input::placeholder {
 }
 
 .nav-links a {
-  text-decoration: none;
-  color: white;
-  font-family: 'Archivo Black', serif;
   font-size: 1.5rem;
 }
 
@@ -135,12 +143,6 @@ input::placeholder {
   margin: 0 0 10px;
 }
 
-@media only screen and (width <= 576px) {
-  .menu > i {
-    display: flex;
-  }
-}
-
 @media only screen and (width >= 600px) {
   .menu {
     display: none;
@@ -162,7 +164,7 @@ input::placeholder {
     width: calc(100% / 2.2);
   }
 
-  .card-text {
+  .card-text:hover {
     overflow: scroll;
   }
 
