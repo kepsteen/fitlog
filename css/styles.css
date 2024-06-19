@@ -49,6 +49,20 @@ input::placeholder {
   padding: 10px;
 }
 
+.hamburger-links {
+  width: 180px;
+  position: absolute;
+  right: 0;
+  left: auto;
+  border: none;
+  background-color: #003566;
+  color: white;
+}
+
+.hamburger-links i {
+  margin-bottom: 20px;
+}
+
 .nav-links > ul {
   display: none;
   list-style: none;
@@ -84,20 +98,6 @@ input::placeholder {
 
 .home {
   gap: 100px;
-}
-
-.hamburger-links {
-  width: 180px;
-  position: absolute;
-  right: 0;
-  left: auto;
-  border: none;
-  background-color: #003566;
-  color: white;
-}
-
-.hamburger-links i {
-  margin-bottom: 20px;
 }
 
 .home > h1 {
@@ -174,10 +174,6 @@ input::placeholder {
 @media only screen and (width >= 1100px) {
   .card-list {
     justify-content: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-right: 0;
-    margin-left: 0;
   }
 
   .card {
