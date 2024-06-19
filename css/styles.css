@@ -162,6 +162,10 @@ input::placeholder {
     width: calc(100% / 2.2);
   }
 
+  .card-text {
+    overflow: scroll;
+  }
+
   #muscle-man-half {
     display: none;
   }
@@ -178,9 +182,5 @@ input::placeholder {
 
   .card {
     width: calc(100% / 3.5);
-  }
-
-  .card-text {
-    overflow: scroll;
   }
 }
