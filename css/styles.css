@@ -179,4 +179,8 @@ input::placeholder {
   .card {
     width: calc(100% / 3.5);
   }
+
+  .card-text {
+    overflow: scroll;
+  }
 }
