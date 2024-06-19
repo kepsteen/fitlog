@@ -20,32 +20,41 @@
   <body>
     <header>
       <div class="navbar flex space-between">
-        <img class="fitlog" src="images/logo.svg" alt="" />
+        <div class="logo flex-grow">
+          <img class="fitlog" src="images/logo.svg" alt="" />
+        </div>
+        <nav class="nav-links">
+          <ul class="">
+            <li><a href="#">Exercises</a></li>
+          </ul>
+        </nav>
         <div class="menu flex justify-center align-center">
           <a href="#"
             ><i class="fa-solid fa-bars fa-xl hamburger" style="color: #fff"></i
           ></a>
         </div>
-        <dialog class="nav-links flex flex-col align-end hidden">
+        <dialog class="hamburger-links flex flex-col align-end hidden">
           <a href="#"
             ><i class="fa-solid fa-x fa-xl" style="color: #ffffff"></i
           ></a>
-          <p>link1</p>
-          <p>link2</p>
-          <p>link3</p>
         </dialog>
       </div>
     </header>
     <main class="">
-      <section class="home flex flex-col align-center hidden" data-view="home">
+      <section class="home flex flex-col align-center" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="begin yellow-btn" id="begin">Begin</button>
         <img
           src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
-          alt="" />
+          alt=""
+          id="muscle-man-half" />
+        <div class="muscle-men flex align-start hidden">
+          <img src="images/muscle-man-full1.png" alt="" />
+          <img src="images/muscle-man-full2.png" alt="" />
+        </div>
       </section>
       <section
-        class="exercises-view flex flex-col align-center"
+        class="exercises-view flex flex-col align-center hidden"
         data-view="exercises-view">
         <h1>Search for Exercises</h1>
         <form action="" id="search-form">
@@ -57,17 +66,23 @@
             placeholder="Exercise" />
           <button type="submit" class="yellow-btn">Search</button>
         </form>
-        <div class="card-list flex flex-col align-center">
-          <div class="card flex column-full">
+        <div class="card-list flex flex-col align-center" id="card-list">
+          <!-- <div class="card flex">
             <img
-              src="https://wger.de/media/exercise-images/1012/8270fdb8-28f1-4eff-b410-af8642085b3f.png"
+              src="https://wger.de/media/exercise-images/129/Standing-biceps-curl-1.png"
               alt=""
               class="card-img" />
             <div class="card-text">
               <h3>Exercise Name</h3>
               <p>Exercise description</p>
             </div>
-          </div>
+          </div> -->
+        </div>
+        <div class="no-results flex flex-col align-center hidden">
+          <p class="" style="">No Results Found.</p>
+          <img
+            src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
+            alt="" />
         </div>
       </section>
     </main>

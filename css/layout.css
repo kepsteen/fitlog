@@ -26,6 +26,18 @@
   align-items: flex-end;
 }
 
+.wrap {
+  flex-wrap: wrap;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
 nav {
   height: 60px;
 }

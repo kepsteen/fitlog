@@ -11,12 +11,12 @@ interface Muscle {
 
 interface Exercise {
   name: string;
-  image?: string;
-  baseId?: number;
-  id?: number;
-  description?: string;
-  primaryMuscles?: Muscle[];
-  secondaryMuscles?: Muscle[];
+  image: string;
+  baseId: number;
+  id: number;
+  description: string;
+  primaryMuscles: Muscle[];
+  secondaryMuscles: Muscle[];
   equipment?: Equipment;
 }
 
@@ -26,16 +26,45 @@ console.log(rootURL);
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
+const $cardList = document.querySelector('.card-list') as HTMLDivElement;
+const $header = document.querySelector('header');
+const $hamburger = document.querySelector('.hamburger');
+const $hamburgerLinks = document.querySelector('.hamburger-links');
+const $noResults = document.querySelector('.no-results');
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
+if (!$cardList) throw new Error('no card list found');
+if (!$header) throw new Error('no header found');
+if (!$noResults) throw new Error('no results not found');
 
-// function renderExercises(exerciseObj: Exercise): void {}
+function renderExercises(exerciseObj: Exercise): void {
+  const $card = document.createElement('div');
+  $card.setAttribute('class', 'card flex');
+
+  const $cardImg = document.createElement('img');
+  $cardImg.setAttribute('src', exerciseObj.image);
+  $cardImg.setAttribute('class', 'card-img');
+
+  const $cardText = document.createElement('div');
+  $cardText.setAttribute('class', 'card-text');
+  const $cardTitle = document.createElement('h3');
+  $cardTitle.textContent = exerciseObj.name;
+  const $cardCaption = document.createElement('p');
+  $cardCaption.innerHTML = exerciseObj.description;
+
+  $cardText.appendChild($cardTitle);
+  $cardText.appendChild($cardCaption);
+  $card.appendChild($cardImg);
+  $card.appendChild($cardText);
+  $cardList?.appendChild($card);
+}
 
 async function fetchExerciseDetails(
   baseId: number,
   id: number,
+  img: string,
 ): Promise<Exercise> {
   const response = await fetch(
     `https://wger.de/api/v2/exercisebaseinfo/${baseId}/`,
@@ -68,12 +97,14 @@ async function fetchExerciseDetails(
       exerciseDescription = exercise.description;
     }
   }
-  const exerciseObj: Exercise = {
+  const exerciseObj = {
     name: exerciseName,
     description: exerciseDescription,
     primaryMuscles,
     secondaryMuscles,
     baseId,
+    image: img,
+    id,
   };
   return exerciseObj;
 }
@@ -93,14 +124,17 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
         const exerciseObj: Exercise = await fetchExerciseDetails(
           data.suggestions[i].data.base_id,
           data.suggestions[i].data.id,
+          'https://wger.de' + data.suggestions[i].data.image,
         );
-        exerciseObj.id = data.suggestions[i].data.id;
-        exerciseObj.image = 'https://wger.de' + data.suggestions[i].data.image;
         exerciseObjArr.push(exerciseObj);
       }
     }
-
-    console.log(exerciseObjArr[0]);
+    if (exerciseObjArr.length > 0) {
+      exerciseObjArr.forEach((element) => renderExercises(element));
+      $noResults?.classList.add('hidden');
+    } else {
+      $noResults?.classList.remove('hidden');
+    }
   } catch (error) {
     console.log(error);
   }
@@ -116,12 +150,20 @@ function viewSwap(view: string): void {
   }
 }
 
+function clearCardList(): void {
+  while ($cardList.hasChildNodes()) {
+    const child = $cardList.firstChild as Node;
+    $cardList.removeChild(child);
+  }
+}
+
 $beginBtn.addEventListener('click', () => {
   viewSwap('exercises-view');
 });
 
 $searchForm.addEventListener('submit', (event: Event) => {
   event.preventDefault();
+  clearCardList();
   const $exerciseSearch = document.querySelector(
     '#exercise-search',
   ) as HTMLInputElement;
@@ -129,4 +171,15 @@ $searchForm.addEventListener('submit', (event: Event) => {
 
   fetchExerciseSearchData($exerciseSearch.value);
   $searchForm.reset();
+});
+
+$header.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLDivElement;
+  if ($eventTarget.classList.contains('hamburger')) {
+    $hamburger?.classList.toggle('hidden');
+    $hamburgerLinks?.classList.toggle('hidden');
+  } else if ($eventTarget.classList.contains('fa-x')) {
+    $hamburger?.classList.toggle('hidden');
+    $hamburgerLinks?.classList.toggle('hidden');
+  }
 });
