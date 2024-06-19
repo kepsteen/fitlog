@@ -37,8 +37,17 @@
       </div>
     </header>
     <main class="">
-      <section class="home flex flex-col align-center" data-view="home">
-        <h1>Search For Exercises</h1>
+      <section class="home flex flex-col align-center hidden" data-view="home">
+        <h1>Begin Your Fitlog Journey</h1>
+        <button type="button" class="begin yellow-btn" id="begin">Begin</button>
+        <img
+          src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
+          alt="" />
+      </section>
+      <section
+        class="exercises-view flex flex-col align-center"
+        data-view="exercises-view">
+        <h1>Search for Exercises</h1>
         <form action="" id="search-form">
           <label for="search"></label>
           <input
@@ -46,11 +55,20 @@
             class="search-bar"
             id="exercise-search"
             placeholder="Exercise" />
-          <button type="submit" class="search-btn">Search</button>
+          <button type="submit" class="yellow-btn">Search</button>
         </form>
-        <img
-          src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
-          alt="" />
+        <div class="card-list flex flex-col align-center">
+          <div class="card flex column-full">
+            <img
+              src="https://wger.de/media/exercise-images/1012/8270fdb8-28f1-4eff-b410-af8642085b3f.png"
+              alt=""
+              class="card-img" />
+            <div class="card-text">
+              <h3>Exercise Name</h3>
+              <p>Exercise description</p>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
     <script src="js/data.js"></script>
