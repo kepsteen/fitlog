@@ -154,6 +154,8 @@ a {
 .details-text {
   width: calc(100% - 100px);
   max-width: 300px;
+  max-height: 300px;
+  object-fit: contain;
 }
 
 .details-img {
@@ -163,6 +165,14 @@ a {
 .details-property {
   margin: 10px 0;
   color: #ffc300;
+}
+
+#details-description {
+  margin-bottom: 20px;
+}
+
+#details-description > p {
+  margin-bottom: 10px;
 }
 
 .blue-btn {
@@ -216,6 +226,7 @@ a {
   .details-img {
     width: calc(50% - 40px);
     max-width: 400px;
+    max-height: 400px;
     margin-right: 20px;
     margin-left: 20px;
   }
@@ -226,6 +237,7 @@ a {
   .details-text {
     width: calc(50% - 40px);
     max-width: 400px;
+    max-height: 400px;
   }
 }
 
@@ -241,5 +253,6 @@ a {
   .details-img,
   .details-text {
     max-width: 400px;
+    max-height: 400px;
   }
 }

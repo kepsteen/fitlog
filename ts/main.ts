@@ -45,7 +45,7 @@ const $detailsEquipment = document.querySelector(
 ) as HTMLSpanElement;
 const $detailsDescription = document.querySelector(
   '#details-description',
-) as HTMLSpanElement;
+) as HTMLParagraphElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -148,7 +148,6 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    // const exerciseObjArr: Exercise[] = [];
     exerciseObjArr = [];
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
@@ -168,7 +167,6 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
-    console.log(exerciseObjArr);
   } catch (error) {
     console.log(error);
   }
@@ -194,17 +192,27 @@ function clearCardList(): void {
 function populateExerciseDetails(baseId: number): void {
   for (const exercise of exerciseObjArr) {
     if (exercise.baseId === baseId) {
-      console.log('exercise', exercise);
-      $detailsTitle.textContent = exercise.name;
+      $detailsTitle.innerHTML =
+        exercise.name +
+        ' <i class="fa-regular fa-heart" style="color: #ffc300"></i>';
       $detailsImg.setAttribute('src', exercise.image);
-      for (const muscle of exercise.primaryMuscles) {
-        $detailsMusclePrim.textContent += muscle.name;
+      if (exercise.primaryMuscles.length > 0) {
+        $detailsMusclePrim.textContent = '';
+        for (const muscle of exercise.primaryMuscles) {
+          $detailsMusclePrim.textContent += `${muscle.name}, `;
+        }
       }
-      for (const muscle of exercise.secondaryMuscles) {
-        $detailsMuscleSec.textContent += muscle.name;
+      if (exercise.secondaryMuscles.length > 0) {
+        $detailsMuscleSec.textContent = '';
+        for (const muscle of exercise.secondaryMuscles) {
+          $detailsMuscleSec.textContent += `${muscle.name}, `;
+        }
       }
-      for (const equipment of exercise.equipment) {
-        $detailsEquipment.textContent += equipment.name;
+      if (exercise.equipment.length > 0) {
+        $detailsEquipment.textContent = '';
+        for (const equipment of exercise.equipment) {
+          $detailsEquipment.textContent += `${equipment.name}, `;
+        }
       }
       $detailsDescription.innerHTML = exercise.description;
     }
@@ -229,18 +237,24 @@ $searchForm.addEventListener('submit', (event: Event) => {
 
 $header.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLDivElement;
+  console.log($eventTarget);
   if ($eventTarget.classList.contains('hamburger')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
   } else if ($eventTarget.classList.contains('fa-x')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
+  } else if ($eventTarget.classList.contains('exercises-view-anchor')) {
+    viewSwap('exercises-view');
+    if ($eventTarget.classList.contains('hamburger-link')) {
+      $hamburger?.classList.toggle('hidden');
+      $hamburgerLinks?.classList.toggle('hidden');
+    }
   }
 });
 
 $cardList.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
-  // console.log($eventTarget);
   if ($eventTarget.closest('.card-list > .card')) {
     const $card = $eventTarget.closest('.card') as HTMLElement;
     if ($card.dataset.baseId) {
