@@ -1,0 +1,188 @@
+h1,
+h2,
+h3 {
+  font-family: 'Archivo Black', serif;
+  color: #000814;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  color: #003566;
+}
+
+header {
+  position: relative;
+}
+
+p {
+  font-family: Archivo, serif;
+  font-size: 1rem;
+}
+
+input {
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+input::placeholder {
+  color: #c4c4c4;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  font-family: 'Archivo Black', serif;
+}
+
+.navbar {
+  background-color: #001d3d;
+}
+
+.menu {
+  width: 50px;
+  border-radius: 5px;
+  border: 1px solid rgb(22, 94, 167);
+  background-color: #003566;
+  margin: auto 10px auto 0;
+}
+
+.fitlog {
+  padding: 10px;
+}
+
+.hamburger-links {
+  width: 180px;
+  position: absolute;
+  right: 0;
+  left: auto;
+  border: none;
+  background-color: #003566;
+  color: white;
+}
+
+.hamburger-links > a {
+  font-family: Archivo, serif;
+  font-size: 1rem;
+}
+
+.hamburger-links i {
+  margin-bottom: 20px;
+}
+
+.nav-links > ul {
+  display: none;
+  list-style: none;
+  gap: 40px;
+  margin-right: 20px;
+}
+
+.nav-links a {
+  font-size: 1.5rem;
+}
+
+.search-bar {
+  height: 30px;
+  width: 250px;
+}
+
+.yellow-btn {
+  height: 30px;
+  font-size: 1.1rem;
+  width: 80px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffc300;
+  color: white;
+}
+
+.begin {
+  width: 200px;
+}
+
+.home {
+  gap: 100px;
+}
+
+.home > h1 {
+  width: 300px;
+  text-align: center;
+}
+
+.card-list {
+  width: 90%;
+  margin: 20px auto;
+  gap: 20px;
+}
+
+.card {
+  width: 100%;
+  padding: 10px;
+  height: 120px;
+  border: 1px solid rgba(128, 128, 128, 0.464);
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.card-img {
+  width: 100px;
+  height: 100px;
+  object-fit: scale-down;
+}
+
+.card-text {
+  max-width: calc(100% - 100px);
+}
+
+.card-text > h3 {
+  margin: 0 0 10px;
+}
+
+@media only screen and (width >= 600px) {
+  .menu {
+    display: none;
+  }
+
+  .nav-links > ul {
+    display: flex;
+  }
+
+  .card-list {
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .card {
+    width: calc(100% / 2.2);
+  }
+
+  .card-text:hover {
+    overflow: scroll;
+  }
+
+  #muscle-man-half {
+    display: none;
+  }
+
+  .muscle-men {
+    display: block;
+  }
+}
+
+@media only screen and (width >= 1100px) {
+  .card-list {
+    justify-content: center;
+  }
+
+  .card {
+    width: calc(100% / 3.5);
+  }
+}

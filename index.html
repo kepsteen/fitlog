@@ -1,20 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AJAX Project</title>
-  <link rel="icon" href="images/favicon.ico">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <header>
-  </header>
-  <main>
-  </main>
-  <script src="js/data.js"></script>
-  <script src="js/main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX Project</title>
+    <link rel="icon" href="images/logo.png" />
+    <script
+      src="https://kit.fontawesome.com/b59a37eed7.js"
+      crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar flex space-between">
+        <div class="logo flex flex-grow align-center">
+          <img class="fitlog" src="images/logo.svg" alt="fitlog log" />
+        </div>
+        <nav class="nav-links">
+          <ul class="">
+            <li><a href="#">Exercises</a></li>
+          </ul>
+        </nav>
+        <div class="menu flex justify-center align-center">
+          <a href="#"
+            ><i class="fa-solid fa-bars fa-xl hamburger" style="color: #fff"></i
+          ></a>
+        </div>
+        <dialog class="hamburger-links flex flex-col align-end hidden">
+          <a href="#"
+            ><i class="fa-solid fa-x fa-xl" style="color: #ffffff"></i
+          ></a>
+          <a href="#"
+            >Exercises
+            <i class="fa-solid fa-dumbbell" style="color: #ffffff"></i
+          ></a>
+        </dialog>
+      </div>
+    </header>
+    <main class="">
+      <section class="home flex flex-col align-center" data-view="home">
+        <h1>Begin Your Fitlog Journey</h1>
+        <button type="button" class="begin yellow-btn" id="begin">Begin</button>
+        <img
+          src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
+          alt=""
+          id="muscle-man-half" />
+        <div class="muscle-men flex align-start hidden">
+          <img src="images/muscle-man-full1.png" alt="muscle man 1" />
+          <img src="images/muscle-man-full2.png" alt="muscle man 2" />
+        </div>
+      </section>
+      <section
+        class="exercises-view flex flex-col align-center hidden"
+        data-view="exercises-view">
+        <h1>Search for Exercises</h1>
+        <form action="" id="search-form">
+          <label for="search"></label>
+          <input
+            type="text"
+            class="search-bar"
+            id="exercise-search"
+            placeholder="Exercise" />
+          <button type="submit" class="yellow-btn">Search</button>
+        </form>
+        <div class="card-list flex wrap align-center" id="card-list"></div>
+        <div class="no-results flex flex-col align-center hidden">
+          <p class="" style="">No Results Found.</p>
+          <img
+            src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
+            alt="muscle man half" />
+        </div>
+      </section>
+    </main>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+  </body>
 </html>
