@@ -1,4 +1,5 @@
 'use strict';
+let exerciseObjArr = [];
 const $searchForm = document.querySelector('#search-form');
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -7,15 +8,28 @@ const $header = document.querySelector('header');
 const $hamburger = document.querySelector('.hamburger');
 const $hamburgerLinks = document.querySelector('.hamburger-links');
 const $noResults = document.querySelector('.no-results');
+const $detailsTitle = document.querySelector('.details-title');
+const $detailsImg = document.querySelector('#details-img');
+const $detailsMusclePrim = document.querySelector('#details-muscle-prim');
+const $detailsMuscleSec = document.querySelector('#details-muscle-sec');
+const $detailsEquipment = document.querySelector('#details-equipment');
+const $detailsDescription = document.querySelector('#details-description');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
 if (!$cardList) throw new Error('no card list found');
 if (!$header) throw new Error('no header found');
 if (!$noResults) throw new Error('no results not found');
+if (!$detailsTitle) throw new Error('no title details found');
+if (!$detailsImg) throw new Error('no img details found');
+if (!$detailsMusclePrim) throw new Error('no prim muscle details found');
+if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
+if (!$detailsEquipment) throw new Error('no equipment details found');
+if (!$detailsDescription) throw new Error('no description details found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex');
+  $card.setAttribute('data-base-id', `${exerciseObj.baseId}`);
   const $cardImg = document.createElement('img');
   $cardImg.setAttribute('src', exerciseObj.image);
   $cardImg.setAttribute('class', 'card-img');
@@ -41,6 +55,7 @@ async function fetchExerciseDetails(baseId, id, img) {
   const data = await response.json();
   const primaryMuscles = [];
   const secondaryMuscles = [];
+  const equipment = [];
   let exerciseName = '';
   let exerciseDescription = '';
   for (const muscle of data.muscles) {
@@ -63,11 +78,18 @@ async function fetchExerciseDetails(baseId, id, img) {
       exerciseDescription = exercise.description;
     }
   }
+  for (const element of data.equipment) {
+    equipment.push({
+      id: element.id,
+      name: element.name,
+    });
+  }
   const exerciseObj = {
     name: exerciseName,
     description: exerciseDescription,
     primaryMuscles,
     secondaryMuscles,
+    equipment,
     baseId,
     image: img,
     id,
@@ -83,7 +105,7 @@ async function fetchExerciseSearchData(term) {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    const exerciseObjArr = [];
+    exerciseObjArr = [];
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
         const exerciseObj = await fetchExerciseDetails(
@@ -121,6 +143,35 @@ function clearCardList() {
     $cardList.removeChild(child);
   }
 }
+function populateExerciseDetails(baseId) {
+  for (const exercise of exerciseObjArr) {
+    if (exercise.baseId === baseId) {
+      $detailsTitle.innerHTML =
+        exercise.name +
+        ' <i class="fa-regular fa-heart" style="color: #ffc300"></i>';
+      $detailsImg.setAttribute('src', exercise.image);
+      if (exercise.primaryMuscles.length > 0) {
+        $detailsMusclePrim.textContent = '';
+        for (const muscle of exercise.primaryMuscles) {
+          $detailsMusclePrim.textContent += `${muscle.name}, `;
+        }
+      }
+      if (exercise.secondaryMuscles.length > 0) {
+        $detailsMuscleSec.textContent = '';
+        for (const muscle of exercise.secondaryMuscles) {
+          $detailsMuscleSec.textContent += `${muscle.name}, `;
+        }
+      }
+      if (exercise.equipment.length > 0) {
+        $detailsEquipment.textContent = '';
+        for (const equipment of exercise.equipment) {
+          $detailsEquipment.textContent += `${equipment.name}, `;
+        }
+      }
+      $detailsDescription.innerHTML = exercise.description;
+    }
+  }
+}
 $beginBtn.addEventListener('click', () => {
   viewSwap('exercises-view');
 });
@@ -134,11 +185,29 @@ $searchForm.addEventListener('submit', (event) => {
 });
 $header.addEventListener('click', (event) => {
   const $eventTarget = event.target;
+  console.log($eventTarget);
   if ($eventTarget.classList.contains('hamburger')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
   } else if ($eventTarget.classList.contains('fa-x')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
+  } else if ($eventTarget.classList.contains('exercises-view-anchor')) {
+    viewSwap('exercises-view');
+    if ($eventTarget.classList.contains('hamburger-link')) {
+      $hamburger?.classList.toggle('hidden');
+      $hamburgerLinks?.classList.toggle('hidden');
+    }
+  }
+});
+$cardList.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if ($eventTarget.closest('.card-list > .card')) {
+    const $card = $eventTarget.closest('.card');
+    if ($card.dataset.baseId) {
+      const cardBaseId = $card.dataset.baseId;
+      viewSwap('exercise-details');
+      populateExerciseDetails(parseInt(cardBaseId));
+    }
   }
 });

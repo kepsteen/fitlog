@@ -18,7 +18,9 @@ header {
   position: relative;
 }
 
-p {
+p,
+span {
+  color: #000814;
   font-family: Archivo, serif;
   font-size: 1rem;
 }
@@ -143,6 +145,45 @@ a {
   margin: 0 0 10px;
 }
 
+.details-title {
+  width: 100%;
+  text-align: center;
+}
+
+.details-img,
+.details-text {
+  width: calc(100% - 100px);
+  max-width: 300px;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.details-img {
+  margin-bottom: 30px;
+}
+
+.details-property {
+  margin: 10px 0;
+  color: #ffc300;
+}
+
+#details-description {
+  margin-bottom: 20px;
+}
+
+#details-description > p {
+  margin-bottom: 10px;
+}
+
+.blue-btn {
+  font-size: 1.1rem;
+  padding: 6px;
+  border: none;
+  border-radius: 5px;
+  background-color: #003566;
+  color: white;
+}
+
 @media only screen and (width >= 600px) {
   .menu {
     display: none;
@@ -175,6 +216,29 @@ a {
   .muscle-men {
     display: block;
   }
+
+  .details-title {
+    width: 100%;
+    text-align: center;
+  }
+
+  .details-text,
+  .details-img {
+    width: calc(50% - 40px);
+    max-width: 400px;
+    max-height: 400px;
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+}
+
+@media only screen and (width >= 800px) {
+  .details-img,
+  .details-text {
+    width: calc(50% - 40px);
+    max-width: 400px;
+    max-height: 400px;
+  }
 }
 
 @media only screen and (width >= 1100px) {
@@ -184,5 +248,11 @@ a {
 
   .card {
     width: calc(100% / 3.5);
+  }
+
+  .details-img,
+  .details-text {
+    max-width: 400px;
+    max-height: 400px;
   }
 }
