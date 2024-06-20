@@ -17,7 +17,7 @@ interface Exercise {
   description: string;
   primaryMuscles: Muscle[];
   secondaryMuscles: Muscle[];
-  equipment?: Equipment;
+  equipment: Equipment[];
 }
 
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
@@ -72,6 +72,7 @@ async function fetchExerciseDetails(
   const data = await response.json();
   const primaryMuscles: Muscle[] = [];
   const secondaryMuscles: Muscle[] = [];
+  const equipment: Equipment[] = [];
   let exerciseName = '';
   let exerciseDescription = '';
   for (const muscle of data.muscles) {
@@ -94,11 +95,18 @@ async function fetchExerciseDetails(
       exerciseDescription = exercise.description;
     }
   }
+  for (const element of data.equipment) {
+    equipment.push({
+      id: element.id,
+      name: element.name,
+    });
+  }
   const exerciseObj = {
     name: exerciseName,
     description: exerciseDescription,
     primaryMuscles,
     secondaryMuscles,
+    equipment,
     baseId,
     image: img,
     id,

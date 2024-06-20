@@ -41,6 +41,7 @@ async function fetchExerciseDetails(baseId, id, img) {
   const data = await response.json();
   const primaryMuscles = [];
   const secondaryMuscles = [];
+  const equipment = [];
   let exerciseName = '';
   let exerciseDescription = '';
   for (const muscle of data.muscles) {
@@ -63,11 +64,18 @@ async function fetchExerciseDetails(baseId, id, img) {
       exerciseDescription = exercise.description;
     }
   }
+  for (const element of data.equipment) {
+    equipment.push({
+      id: element.id,
+      name: element.name,
+    });
+  }
   const exerciseObj = {
     name: exerciseName,
     description: exerciseDescription,
     primaryMuscles,
     secondaryMuscles,
+    equipment,
     baseId,
     image: img,
     id,
