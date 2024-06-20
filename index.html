@@ -48,7 +48,7 @@
       </div>
     </header>
     <main class="">
-      <section class="home flex flex-col align-center" data-view="home">
+      <section class="home flex flex-col align-center hidden" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="begin yellow-btn" id="begin">Begin</button>
         <img
@@ -65,7 +65,7 @@
         </div>
       </section>
       <section
-        class="exercises-view flex flex-col align-center hidden"
+        class="exercises-view flex flex-col align-center"
         data-view="exercises-view">
         <h1>Search for Exercises</h1>
         <form action="" id="search-form">
@@ -100,23 +100,18 @@
         <div class="details-text">
           <p class="details-property">
             Primary Muscles Targeted:
-            <span id="details-muscle-prim">Muscle 1</span>
+            <span id="details-muscle-prim"></span>
           </p>
           <p class="details-property">
             Secondary Muscles Targeted:
-            <span id="details-muscle-sec">Muscle 2</span>
+            <span id="details-muscle-sec"></span>
           </p>
           <p class="details-property">
-            Equipment Required: <span id="details-equipment">Equipment 1</span>
+            Equipment Required: <span id="details-equipment"></span>
           </p>
           <p class="details-property">
             Description:
-            <span id="details-description"
-              >Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Doloribus laboriosam cumque, perspiciatis, cupiditate id eaque
-              dolor est veritatis vero laudantium totam quibusdam dignissimos
-              neque, esse expedita. Eos repellendus eveniet corporis?</span
-            >
+            <span id="details-description"></span>
           </p>
           <button class="blue-btn">Add to Workout</button>
         </div>

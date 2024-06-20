@@ -1,4 +1,5 @@
 'use strict';
+let exerciseObjArr = [];
 const $searchForm = document.querySelector('#search-form');
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -7,15 +8,28 @@ const $header = document.querySelector('header');
 const $hamburger = document.querySelector('.hamburger');
 const $hamburgerLinks = document.querySelector('.hamburger-links');
 const $noResults = document.querySelector('.no-results');
+const $detailsTitle = document.querySelector('.details-title');
+const $detailsImg = document.querySelector('#details-img');
+const $detailsMusclePrim = document.querySelector('#details-muscle-prim');
+const $detailsMuscleSec = document.querySelector('#details-muscle-sec');
+const $detailsEquipment = document.querySelector('#details-equipment');
+const $detailsDescription = document.querySelector('#details-description');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
 if (!$cardList) throw new Error('no card list found');
 if (!$header) throw new Error('no header found');
 if (!$noResults) throw new Error('no results not found');
+if (!$detailsTitle) throw new Error('no title details found');
+if (!$detailsImg) throw new Error('no img details found');
+if (!$detailsMusclePrim) throw new Error('no prim muscle details found');
+if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
+if (!$detailsEquipment) throw new Error('no equipment details found');
+if (!$detailsDescription) throw new Error('no description details found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex');
+  $card.setAttribute('data-base-id', `${exerciseObj.baseId}`);
   const $cardImg = document.createElement('img');
   $cardImg.setAttribute('src', exerciseObj.image);
   $cardImg.setAttribute('class', 'card-img');
@@ -91,7 +105,8 @@ async function fetchExerciseSearchData(term) {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    const exerciseObjArr = [];
+    // const exerciseObjArr: Exercise[] = [];
+    exerciseObjArr = [];
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
         const exerciseObj = await fetchExerciseDetails(
@@ -110,6 +125,7 @@ async function fetchExerciseSearchData(term) {
     } else {
       $noResults?.classList.remove('hidden');
     }
+    console.log(exerciseObjArr);
   } catch (error) {
     console.log(error);
   }
@@ -127,6 +143,25 @@ function clearCardList() {
   while ($cardList.hasChildNodes()) {
     const child = $cardList.firstChild;
     $cardList.removeChild(child);
+  }
+}
+function populateExerciseDetails(baseId) {
+  for (const exercise of exerciseObjArr) {
+    if (exercise.baseId === baseId) {
+      console.log('exercise', exercise);
+      $detailsTitle.textContent = exercise.name;
+      $detailsImg.setAttribute('src', exercise.image);
+      for (const muscle of exercise.primaryMuscles) {
+        $detailsMusclePrim.textContent += muscle.name;
+      }
+      for (const muscle of exercise.secondaryMuscles) {
+        $detailsMuscleSec.textContent += muscle.name;
+      }
+      for (const equipment of exercise.equipment) {
+        $detailsEquipment.textContent += equipment.name;
+      }
+      $detailsDescription.innerHTML = exercise.description;
+    }
   }
 }
 $beginBtn.addEventListener('click', () => {
@@ -148,5 +183,17 @@ $header.addEventListener('click', (event) => {
   } else if ($eventTarget.classList.contains('fa-x')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
+  }
+});
+$cardList.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  // console.log($eventTarget);
+  if ($eventTarget.closest('.card-list > .card')) {
+    const $card = $eventTarget.closest('.card');
+    if ($card.dataset.baseId) {
+      const cardBaseId = $card.dataset.baseId;
+      viewSwap('exercise-details');
+      populateExerciseDetails(parseInt(cardBaseId));
+    }
   }
 });

@@ -20,6 +20,8 @@ interface Exercise {
   equipment: Equipment[];
 }
 
+let exerciseObjArr: Exercise[] = [];
+
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -28,6 +30,22 @@ const $header = document.querySelector('header');
 const $hamburger = document.querySelector('.hamburger');
 const $hamburgerLinks = document.querySelector('.hamburger-links');
 const $noResults = document.querySelector('.no-results');
+const $detailsTitle = document.querySelector(
+  '.details-title',
+) as HTMLHeadingElement;
+const $detailsImg = document.querySelector('#details-img') as HTMLImageElement;
+const $detailsMusclePrim = document.querySelector(
+  '#details-muscle-prim',
+) as HTMLSpanElement;
+const $detailsMuscleSec = document.querySelector(
+  '#details-muscle-sec',
+) as HTMLSpanElement;
+const $detailsEquipment = document.querySelector(
+  '#details-equipment',
+) as HTMLSpanElement;
+const $detailsDescription = document.querySelector(
+  '#details-description',
+) as HTMLSpanElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -35,10 +53,17 @@ if (!$beginBtn) throw new Error('no begin button found');
 if (!$cardList) throw new Error('no card list found');
 if (!$header) throw new Error('no header found');
 if (!$noResults) throw new Error('no results not found');
+if (!$detailsTitle) throw new Error('no title details found');
+if (!$detailsImg) throw new Error('no img details found');
+if (!$detailsMusclePrim) throw new Error('no prim muscle details found');
+if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
+if (!$detailsEquipment) throw new Error('no equipment details found');
+if (!$detailsDescription) throw new Error('no description details found');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex');
+  $card.setAttribute('data-base-id', `${exerciseObj.baseId}`);
 
   const $cardImg = document.createElement('img');
   $cardImg.setAttribute('src', exerciseObj.image);
@@ -123,7 +148,8 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    const exerciseObjArr: Exercise[] = [];
+    // const exerciseObjArr: Exercise[] = [];
+    exerciseObjArr = [];
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
         const exerciseObj: Exercise = await fetchExerciseDetails(
@@ -142,6 +168,7 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
+    console.log(exerciseObjArr);
   } catch (error) {
     console.log(error);
   }
@@ -161,6 +188,26 @@ function clearCardList(): void {
   while ($cardList.hasChildNodes()) {
     const child = $cardList.firstChild as Node;
     $cardList.removeChild(child);
+  }
+}
+
+function populateExerciseDetails(baseId: number): void {
+  for (const exercise of exerciseObjArr) {
+    if (exercise.baseId === baseId) {
+      console.log('exercise', exercise);
+      $detailsTitle.textContent = exercise.name;
+      $detailsImg.setAttribute('src', exercise.image);
+      for (const muscle of exercise.primaryMuscles) {
+        $detailsMusclePrim.textContent += muscle.name;
+      }
+      for (const muscle of exercise.secondaryMuscles) {
+        $detailsMuscleSec.textContent += muscle.name;
+      }
+      for (const equipment of exercise.equipment) {
+        $detailsEquipment.textContent += equipment.name;
+      }
+      $detailsDescription.innerHTML = exercise.description;
+    }
   }
 }
 
@@ -188,5 +235,18 @@ $header.addEventListener('click', (event: Event) => {
   } else if ($eventTarget.classList.contains('fa-x')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
+  }
+});
+
+$cardList.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  // console.log($eventTarget);
+  if ($eventTarget.closest('.card-list > .card')) {
+    const $card = $eventTarget.closest('.card') as HTMLElement;
+    if ($card.dataset.baseId) {
+      const cardBaseId = $card.dataset.baseId;
+      viewSwap('exercise-details');
+      populateExerciseDetails(parseInt(cardBaseId));
+    }
   }
 });
