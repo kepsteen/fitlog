@@ -256,7 +256,6 @@ function handleFavoriteClick(
       }
     }
   }
-  console.log(fitlogData.favorites);
 }
 
 function populateExerciseDetails(baseId: number): void {
