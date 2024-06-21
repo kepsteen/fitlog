@@ -20,7 +20,7 @@
   <body>
     <header>
       <div class="navbar flex space-between">
-        <div class="logo flex flex-grow align-center">
+        <div class="logo flex align-center">
           <img
             class="fitlog"
             src="images/logo.svg"
@@ -94,11 +94,13 @@
       </section>
       <section
         class="details flex justify-center wrap hidden"
-        data-view="exercise-details">
-        <h1 class="details-title">
-          Exercise Name
+        data-view="exercise-details"
+        id="details-section">
+        <div
+          class="title-container column-full flex justify-center align-baseline">
+          <h1 class="details-title">Exercise Name</h1>
           <i class="fa-regular fa-heart" style="color: #ffc300"></i>
-        </h1>
+        </div>
         <img
           src="images/square placeholder.png"
           class="details-img"

@@ -18,6 +18,7 @@ interface Exercise {
   primaryMuscles: Muscle[];
   secondaryMuscles: Muscle[];
   equipment: Equipment[];
+  favorite: boolean;
 }
 
 let exerciseObjArr: Exercise[] = [];
@@ -46,6 +47,11 @@ const $detailsEquipment = document.querySelector(
 const $detailsDescription = document.querySelector(
   '#details-description',
 ) as HTMLParagraphElement;
+const $exerciseDetailSection = document.querySelector(
+  '#details-section',
+) as HTMLElement;
+let $exercisesNodeList: NodeListOf<HTMLElement>;
+const $heart = document.querySelector('.fa-heart') as HTMLElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -59,10 +65,12 @@ if (!$detailsMusclePrim) throw new Error('no prim muscle details found');
 if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
 if (!$detailsEquipment) throw new Error('no equipment details found');
 if (!$detailsDescription) throw new Error('no description details found');
+if (!$exerciseDetailSection) throw new Error('no exercise view section found');
+if (!$heart) throw new Error('no heart found');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
-  $card.setAttribute('class', 'card flex');
+  $card.setAttribute('class', 'card flex space-between');
   $card.setAttribute('data-base-id', `${exerciseObj.baseId}`);
 
   const $cardImg = document.createElement('img');
@@ -73,13 +81,19 @@ function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   $cardText.setAttribute('class', 'card-text');
   const $cardTitle = document.createElement('h3');
   $cardTitle.textContent = exerciseObj.name;
-  const $cardCaption = document.createElement('p');
-  $cardCaption.innerHTML = exerciseObj.description;
+
+  const $heart = document.createElement('i');
+  if (exerciseObj.favorite) {
+    $heart.setAttribute('class', 'fa-solid fa-heart');
+  } else {
+    $heart.setAttribute('class', 'fa-regular fa-heart');
+  }
+  $heart.setAttribute('style', 'color: #FFC300;');
 
   $cardText.appendChild($cardTitle);
-  $cardText.appendChild($cardCaption);
   $card.appendChild($cardImg);
   $card.appendChild($cardText);
+  $card.appendChild($heart);
   return $card;
 }
 
@@ -100,6 +114,7 @@ async function fetchExerciseDetails(
   const equipment: Equipment[] = [];
   let exerciseName = '';
   let exerciseDescription = '';
+  let favorited = false;
   for (const muscle of data.muscles) {
     primaryMuscles.push({
       name: muscle.name,
@@ -126,6 +141,12 @@ async function fetchExerciseDetails(
       name: element.name,
     });
   }
+  for (const element of fitlogData.favorites) {
+    if (baseId === element.baseId) {
+      favorited = true;
+    }
+  }
+
   const exerciseObj = {
     name: exerciseName,
     description: exerciseDescription,
@@ -135,6 +156,7 @@ async function fetchExerciseDetails(
     baseId,
     image: img,
     id,
+    favorite: favorited,
   };
   return exerciseObj;
 }
@@ -167,6 +189,8 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
+    $exercisesNodeList = document.querySelectorAll('.card');
+    if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   } catch (error) {
     console.log(error);
   }
@@ -189,34 +213,78 @@ function clearCardList(): void {
   }
 }
 
-function populateExerciseDetails(baseId: number): void {
+function findExerciseByBaseId(baseId: number): Exercise | null {
   for (const exercise of exerciseObjArr) {
     if (exercise.baseId === baseId) {
-      $detailsTitle.innerHTML =
-        exercise.name +
-        ' <i class="fa-regular fa-heart" style="color: #ffc300"></i>';
-      $detailsImg.setAttribute('src', exercise.image);
-      if (exercise.primaryMuscles.length > 0) {
-        $detailsMusclePrim.textContent = '';
-        for (const muscle of exercise.primaryMuscles) {
-          $detailsMusclePrim.textContent += `${muscle.name}, `;
-        }
-      }
-      if (exercise.secondaryMuscles.length > 0) {
-        $detailsMuscleSec.textContent = '';
-        for (const muscle of exercise.secondaryMuscles) {
-          $detailsMuscleSec.textContent += `${muscle.name}, `;
-        }
-      }
-      if (exercise.equipment.length > 0) {
-        $detailsEquipment.textContent = '';
-        for (const equipment of exercise.equipment) {
-          $detailsEquipment.textContent += `${equipment.name}, `;
-        }
-      }
-      $detailsDescription.innerHTML = exercise.description;
+      return exercise;
     }
   }
+  return null;
+}
+
+function handleFavoriteClick(
+  exerciseObj: Exercise,
+  targetIcon: HTMLElement,
+): void {
+  if (targetIcon.classList.contains('fa-regular')) {
+    targetIcon.classList.remove('fa-regular');
+    targetIcon.classList.add('fa-solid');
+    fitlogData.favorites.push(exerciseObj);
+    exerciseObj.favorite = true;
+  } else if (targetIcon.classList.contains('fa-solid')) {
+    targetIcon.classList.remove('fa-solid');
+    targetIcon.classList.add('fa-regular');
+    exerciseObj.favorite = false;
+    let indexToRemove = -1;
+    for (let i = 0; i < fitlogData.favorites.length; i++) {
+      if (fitlogData.favorites[i].baseId === exerciseObj.baseId) {
+        indexToRemove = i;
+      }
+    }
+    fitlogData.favorites.splice(indexToRemove, 1);
+  }
+  for (let i = 0; i < $exercisesNodeList.length; i++) {
+    const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
+    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      if (exerciseObj.favorite) {
+        $heartIcon?.classList.remove('fa-regular');
+        $heartIcon?.classList.add('fa-solid');
+      } else {
+        $heartIcon?.classList.add('fa-regular');
+        $heartIcon?.classList.remove('fa-solid');
+      }
+    }
+  }
+}
+
+function populateExerciseDetails(baseId: number): void {
+  $exerciseDetailSection.setAttribute('data-base-id', `${baseId}`);
+  const exercise = findExerciseByBaseId(baseId);
+  if (!exercise) return;
+  $detailsTitle.textContent = exercise.name + ' ';
+  if (exercise.favorite) $heart.setAttribute('class', 'fa-solid fa-heart');
+  if (!exercise.favorite) $heart.setAttribute('class', 'fa-regular fa-heart');
+  $detailsImg.setAttribute('src', exercise.image);
+  if (exercise.primaryMuscles.length > 0) {
+    $detailsMusclePrim.textContent = '';
+    for (const muscle of exercise.primaryMuscles) {
+      $detailsMusclePrim.textContent += `${muscle.name}, `;
+    }
+  }
+  if (exercise.secondaryMuscles.length > 0) {
+    $detailsMuscleSec.textContent = '';
+    for (const muscle of exercise.secondaryMuscles) {
+      $detailsMuscleSec.textContent += `${muscle.name}, `;
+    }
+  }
+  if (exercise.equipment.length > 0) {
+    $detailsEquipment.textContent = '';
+    for (const equipment of exercise.equipment) {
+      $detailsEquipment.textContent += `${equipment.name}, `;
+    }
+  }
+  $detailsDescription.innerHTML = exercise.description;
 }
 
 $beginBtn.addEventListener('click', () => {
@@ -237,7 +305,6 @@ $searchForm.addEventListener('submit', (event: Event) => {
 
 $header.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLDivElement;
-  console.log($eventTarget);
   if ($eventTarget.classList.contains('hamburger')) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
@@ -259,8 +326,24 @@ $cardList.addEventListener('click', (event: Event) => {
     const $card = $eventTarget.closest('.card') as HTMLElement;
     if ($card.dataset.baseId) {
       const cardBaseId = $card.dataset.baseId;
-      viewSwap('exercise-details');
-      populateExerciseDetails(parseInt(cardBaseId));
+      if ($eventTarget.tagName !== 'I') {
+        populateExerciseDetails(parseInt(cardBaseId));
+        viewSwap('exercise-details');
+      } else if ($eventTarget.tagName === 'I') {
+        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
+        if (exercise) handleFavoriteClick(exercise, $eventTarget);
+      }
     }
+  }
+});
+
+$exerciseDetailSection.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  if ($eventTarget.tagName === 'I') {
+    const $section = $eventTarget.closest('section.details') as HTMLElement;
+    const exercise = findExerciseByBaseId(
+      parseInt($section.dataset.baseId as string),
+    );
+    if (exercise) handleFavoriteClick(exercise, $eventTarget);
   }
 });

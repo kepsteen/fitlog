@@ -6,6 +6,10 @@
   flex-direction: column;
 }
 
+.column-full {
+  flex-basis: 100%;
+}
+
 .hidden {
   display: none;
 }
@@ -26,6 +30,10 @@
   align-items: flex-end;
 }
 
+.align-baseline {
+  align-items: baseline;
+}
+
 .wrap {
   flex-wrap: wrap;
 }
@@ -40,5 +48,4 @@ nav {
 
 .menu {
   height: 40px;
-  width: 40px;
 }
