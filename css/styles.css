@@ -65,6 +65,7 @@ a {
   border: none;
   background-color: #003566;
   color: white;
+  z-index: 100;
 }
 
 .hamburger-links > a {
@@ -146,8 +147,20 @@ a {
 }
 
 .details-title {
-  width: 100%;
   text-align: center;
+}
+
+.title-container > i {
+  font-size: 1.75rem;
+  margin-right: 10px;
+}
+
+.details {
+  position: relative;
+}
+
+.title-container {
+  gap: 10px;
 }
 
 .details-img,
@@ -212,7 +225,7 @@ a {
   }
 
   .details-title {
-    width: 100%;
+    /* width: 100%; */
     text-align: center;
   }
 

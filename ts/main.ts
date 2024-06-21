@@ -52,6 +52,7 @@ const $exerciseDetailSection = document.querySelector(
 ) as HTMLElement;
 const $main = document.querySelector('main') as HTMLElement;
 let $exercisesNodeList: NodeListOf<HTMLElement>;
+const $heart = document.querySelector('.fa-heart') as HTMLElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -67,6 +68,7 @@ if (!$detailsEquipment) throw new Error('no equipment details found');
 if (!$detailsDescription) throw new Error('no description details found');
 if (!$exerciseDetailSection) throw new Error('no exercise view section found');
 if (!$main) throw new Error('no main container found');
+if (!$heart) throw new Error('no heart found');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
@@ -263,11 +265,8 @@ function populateExerciseDetails(baseId: number): void {
   const exercise = findExerciseByBaseId(baseId);
   if (!exercise) return;
   $detailsTitle.textContent = exercise.name + ' ';
-  const $heart = document.createElement('i');
   if (exercise.favorite) $heart.setAttribute('class', 'fa-solid fa-heart');
   if (!exercise.favorite) $heart.setAttribute('class', 'fa-regular fa-heart');
-  $heart.setAttribute('style', 'color: #FFC300;');
-  $detailsTitle.appendChild($heart);
   $detailsImg.setAttribute('src', exercise.image);
   if (exercise.primaryMuscles.length > 0) {
     $detailsMusclePrim.textContent = '';

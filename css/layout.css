@@ -6,6 +6,10 @@
   flex-direction: column;
 }
 
+.column-full {
+  flex-basis: 100%;
+}
+
 .hidden {
   display: none;
 }
@@ -24,6 +28,10 @@
 
 .align-end {
   align-items: flex-end;
+}
+
+.align-baseline {
+  align-items: baseline;
 }
 
 .wrap {
