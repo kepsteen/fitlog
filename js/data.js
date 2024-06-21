@@ -1,2 +1,5 @@
 'use strict';
-/* exported data */
+const data = {
+  favorites: [],
+  currentExercise: [],
+};
