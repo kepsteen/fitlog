@@ -36,6 +36,14 @@
                 >Exercises</a
               >
             </li>
+            <li>
+              <a
+                href="#"
+                data-view="favorites-view"
+                class="favorites-view-anchor"
+                >Favorites</a
+              >
+            </li>
           </ul>
         </nav>
         <div class="menu flex justify-center align-center">
@@ -50,6 +58,9 @@
           <a href="#" class="exercises-view-anchor hamburger-link"
             >Exercises
             <i class="fa-solid fa-dumbbell" style="color: #ffffff"></i
+          ></a>
+          <a href="#" class="favorites-view-anchor hamburger-link"
+            >Favorites <i class="fa-solid fa-heart" style="color: #ffffff"></i
           ></a>
         </dialog>
       </div>
@@ -122,6 +133,18 @@
           <p class="details-property">Description:</p>
           <p id="details-description"></p>
           <button class="blue-btn">Add to Workout</button>
+        </div>
+      </section>
+      <section
+        class="favorites-view flex flex-col align-center"
+        data-view="favorites-view">
+        <h1>Favorite Exercises</h1>
+        <div class="card-list flex wrap align-center"></div>
+        <div class="no-results flex flex-col align-center hidden">
+          <p class="" style="">No Results Found.</p>
+          <img
+            src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
+            alt="muscle man half with fitlog logo" />
         </div>
       </section>
     </main>
