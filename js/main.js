@@ -15,6 +15,8 @@ const $detailsMuscleSec = document.querySelector('#details-muscle-sec');
 const $detailsEquipment = document.querySelector('#details-equipment');
 const $detailsDescription = document.querySelector('#details-description');
 const $exerciseDetailSection = document.querySelector('#details-section');
+const $main = document.querySelector('main');
+let $exercisesNodeList;
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -28,6 +30,7 @@ if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
 if (!$detailsEquipment) throw new Error('no equipment details found');
 if (!$detailsDescription) throw new Error('no description details found');
 if (!$exerciseDetailSection) throw new Error('no exercise view section found');
+if (!$main) throw new Error('no main container found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -138,6 +141,8 @@ async function fetchExerciseSearchData(term) {
     } else {
       $noResults?.classList.remove('hidden');
     }
+    $exercisesNodeList = document.querySelectorAll('.card');
+    if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   } catch (error) {
     console.log(error);
   }
@@ -181,7 +186,21 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
         indexToRemove = i;
       }
     }
+    console.log(fitlogData.favorites);
     fitlogData.favorites.splice(indexToRemove, 1);
+  }
+  for (let i = 0; i < $exercisesNodeList.length; i++) {
+    const nodeBaseId = $exercisesNodeList[i].dataset.baseId;
+    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      if (exerciseObj.favorite) {
+        $heartIcon?.classList.remove('fa-regular');
+        $heartIcon?.classList.add('fa-solid');
+      } else {
+        $heartIcon?.classList.add('fa-regular');
+        $heartIcon?.classList.remove('fa-solid');
+      }
+    }
   }
 }
 function populateExerciseDetails(baseId) {
@@ -256,7 +275,7 @@ $cardList.addEventListener('click', (event) => {
     }
   }
 });
-document.addEventListener('click', (event) => {
+$main.addEventListener('click', (event) => {
   const $eventTarget = event.target;
   if ($eventTarget.tagName !== 'I') return;
   if ($eventTarget.closest('.card-list > .card')) {

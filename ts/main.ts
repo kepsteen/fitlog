@@ -50,6 +50,8 @@ const $detailsDescription = document.querySelector(
 const $exerciseDetailSection = document.querySelector(
   '#details-section',
 ) as HTMLElement;
+const $main = document.querySelector('main') as HTMLElement;
+let $exercisesNodeList: NodeListOf<HTMLElement>;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -64,6 +66,7 @@ if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
 if (!$detailsEquipment) throw new Error('no equipment details found');
 if (!$detailsDescription) throw new Error('no description details found');
 if (!$exerciseDetailSection) throw new Error('no exercise view section found');
+if (!$main) throw new Error('no main container found');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
@@ -186,6 +189,8 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
+    $exercisesNodeList = document.querySelectorAll('.card');
+    if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   } catch (error) {
     console.log(error);
   }
@@ -237,6 +242,19 @@ function handleFavoriteClick(
       }
     }
     fitlogData.favorites.splice(indexToRemove, 1);
+  }
+  for (let i = 0; i < $exercisesNodeList.length; i++) {
+    const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
+    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      if (exerciseObj.favorite) {
+        $heartIcon?.classList.remove('fa-regular');
+        $heartIcon?.classList.add('fa-solid');
+      } else {
+        $heartIcon?.classList.add('fa-regular');
+        $heartIcon?.classList.remove('fa-solid');
+      }
+    }
   }
 }
 
@@ -320,7 +338,7 @@ $cardList.addEventListener('click', (event: Event) => {
   }
 });
 
-document.addEventListener('click', (event: Event) => {
+$main.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
   if ($eventTarget.tagName !== 'I') return;
   if ($eventTarget.closest('.card-list > .card')) {

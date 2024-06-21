@@ -16,5 +16,4 @@ const previousJSON = localStorage.getItem('fitlog-data');
 if (previousJSON) {
   const parsedDataJSON = JSON.parse(previousJSON);
   fitlogData = parsedDataJSON;
-  console.log(fitlogData);
 }

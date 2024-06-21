@@ -203,10 +203,6 @@ a {
     width: calc(100% / 2.2);
   }
 
-  .card-text:hover {
-    overflow: scroll;
-  }
-
   #muscle-man-half {
     display: none;
   }
