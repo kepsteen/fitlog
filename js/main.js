@@ -166,7 +166,7 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
     data.favorites.push(exerciseObj);
     exerciseObj.favorite = true;
   } else if (targetIcon.classList.contains('fa-solid')) {
-    //unfavorited the exercise
+    // unfavorited the exercise
     targetIcon.classList.remove('fa-solid');
     targetIcon.classList.add('fa-regular');
     exerciseObj.favorite = false;
@@ -178,12 +178,25 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
     }
     data.favorites.splice(indexToRemove, 1);
   }
+  for (let i = 0; i < $exercisesNodeList.length; i++) {
+    let nodeBaseId = $exercisesNodeList[i].dataset.baseId;
+    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      if (exerciseObj.favorite) {
+        $heartIcon?.classList.remove('fa-regular');
+        $heartIcon?.classList.add('fa-solid');
+      } else {
+        $heartIcon?.classList.add('fa-regular');
+        $heartIcon?.classList.remove('fa-solid');
+      }
+    }
+  }
   console.log(data.favorites);
   data.currentExercise.pop();
 }
 function populateExerciseDetails(baseId) {
   $exerciseDetailSection.setAttribute('data-base-id', `${baseId}`);
-  let exercise = findExerciseByBaseId(baseId);
+  const exercise = findExerciseByBaseId(baseId);
   if (!exercise) return;
   $detailsTitle.textContent = exercise.name + ' ';
   const $heart = document.createElement('i');
@@ -261,14 +274,14 @@ document.addEventListener('click', (event) => {
     const $card = $eventTarget.closest('.card');
     if ($card.dataset.baseId) {
       const cardBaseId = parseInt($card.dataset.baseId);
-      let exercise = findExerciseByBaseId(cardBaseId);
+      const exercise = findExerciseByBaseId(cardBaseId);
       if (exercise) data.currentExercise.push(exercise);
     }
     console.log('card heart clicked');
   } else {
     const $section = $eventTarget.closest('section.details');
     if ($section.dataset.baseId) {
-      let exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
+      const exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
       if (exercise) data.currentExercise.push(exercise);
     }
   }

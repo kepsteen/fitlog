@@ -232,6 +232,19 @@ function handleFavoriteClick(
     }
     data.favorites.splice(indexToRemove, 1);
   }
+  for (let i = 0; i < $exercisesNodeList.length; i++) {
+    const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
+    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      if (exerciseObj.favorite) {
+        $heartIcon?.classList.remove('fa-regular');
+        $heartIcon?.classList.add('fa-solid');
+      } else {
+        $heartIcon?.classList.add('fa-regular');
+        $heartIcon?.classList.remove('fa-solid');
+      }
+    }
+  }
   console.log(data.favorites);
   data.currentExercise.pop();
 }
