@@ -1,12 +1,10 @@
 /* exported data */
 interface Data {
   favorites: Exercise[];
-  currentExercise: Exercise[];
 }
 
 let fitlogData: Data = {
   favorites: [],
-  currentExercise: [],
 };
 
 window.addEventListener('beforeunload', () => {

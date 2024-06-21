@@ -50,7 +50,6 @@ const $detailsDescription = document.querySelector(
 const $exerciseDetailSection = document.querySelector(
   '#details-section',
 ) as HTMLElement;
-let $exercisesNodeList: NodeListOf<HTMLElement>;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -187,8 +186,6 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
-    $exercisesNodeList = document.querySelectorAll('.card');
-    if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   } catch (error) {
     console.log(error);
   }
@@ -225,13 +222,11 @@ function handleFavoriteClick(
   targetIcon: HTMLElement,
 ): void {
   if (targetIcon.classList.contains('fa-regular')) {
-    // favorited the exercise
     targetIcon.classList.remove('fa-regular');
     targetIcon.classList.add('fa-solid');
     fitlogData.favorites.push(exerciseObj);
     exerciseObj.favorite = true;
   } else if (targetIcon.classList.contains('fa-solid')) {
-    // unfavorited the exercise
     targetIcon.classList.remove('fa-solid');
     targetIcon.classList.add('fa-regular');
     exerciseObj.favorite = false;
@@ -243,20 +238,6 @@ function handleFavoriteClick(
     }
     fitlogData.favorites.splice(indexToRemove, 1);
   }
-  for (let i = 0; i < $exercisesNodeList.length; i++) {
-    const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
-    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
-      const $heartIcon = $exercisesNodeList[i].lastElementChild;
-      if (exerciseObj.favorite) {
-        $heartIcon?.classList.remove('fa-regular');
-        $heartIcon?.classList.add('fa-solid');
-      } else {
-        $heartIcon?.classList.add('fa-regular');
-        $heartIcon?.classList.remove('fa-solid');
-      }
-    }
-  }
-  fitlogData.currentExercise.pop();
 }
 
 function populateExerciseDetails(baseId: number): void {
@@ -333,8 +314,8 @@ $cardList.addEventListener('click', (event: Event) => {
     const $card = $eventTarget.closest('.card') as HTMLElement;
     if ($card.dataset.baseId) {
       const cardBaseId = $card.dataset.baseId;
-      viewSwap('exercise-details');
       populateExerciseDetails(parseInt(cardBaseId));
+      viewSwap('exercise-details');
     }
   }
 });
@@ -347,17 +328,13 @@ document.addEventListener('click', (event: Event) => {
     if ($card.dataset.baseId) {
       const cardBaseId = parseInt($card.dataset.baseId);
       const exercise = findExerciseByBaseId(cardBaseId);
-      if (exercise) fitlogData.currentExercise.push(exercise);
+      if (exercise) handleFavoriteClick(exercise, $eventTarget);
     }
   } else {
     const $section = $eventTarget.closest('section.details') as HTMLElement;
     if ($section.dataset.baseId) {
       const exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
-      if (exercise) fitlogData.currentExercise.push(exercise);
+      if (exercise) handleFavoriteClick(exercise, $eventTarget);
     }
   }
-  handleFavoriteClick(fitlogData.currentExercise[0], $eventTarget);
-  console.log(exerciseObjArr[0]);
 });
-
-window.addEventListener('beforeunload', () => {});

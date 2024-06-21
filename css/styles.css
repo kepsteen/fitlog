@@ -195,8 +195,6 @@ a {
 
   .card-list {
     justify-content: space-between;
-    flex-direction: row;
-    flex-wrap: wrap;
     margin-right: 0;
     margin-left: 0;
   }
