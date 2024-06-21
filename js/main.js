@@ -15,7 +15,6 @@ const $detailsMuscleSec = document.querySelector('#details-muscle-sec');
 const $detailsEquipment = document.querySelector('#details-equipment');
 const $detailsDescription = document.querySelector('#details-description');
 const $exerciseDetailSection = document.querySelector('#details-section');
-const $main = document.querySelector('main');
 let $exercisesNodeList;
 const $heart = document.querySelector('.fa-heart');
 if (!$searchForm) throw new Error('no search form found');
@@ -31,7 +30,6 @@ if (!$detailsMuscleSec) throw new Error('no sec muscle details found');
 if (!$detailsEquipment) throw new Error('no equipment details found');
 if (!$detailsDescription) throw new Error('no description details found');
 if (!$exerciseDetailSection) throw new Error('no exercise view section found');
-if (!$main) throw new Error('no main container found');
 if (!$heart) throw new Error('no heart found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
@@ -203,6 +201,7 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
       }
     }
   }
+  console.log(fitlogData.favorites);
 }
 function populateExerciseDetails(baseId) {
   $exerciseDetailSection.setAttribute('data-base-id', `${baseId}`);
@@ -261,33 +260,25 @@ $header.addEventListener('click', (event) => {
 });
 $cardList.addEventListener('click', (event) => {
   const $eventTarget = event.target;
-  if (
-    $eventTarget.closest('.card-list > .card') &&
-    $eventTarget.tagName !== 'I'
-  ) {
-    const $card = $eventTarget.closest('.card');
-    if ($card.dataset.baseId) {
-      const cardBaseId = $card.dataset.baseId;
-      populateExerciseDetails(parseInt(cardBaseId));
-      viewSwap('exercise-details');
-    }
-  }
-});
-$main.addEventListener('click', (event) => {
-  const $eventTarget = event.target;
-  if ($eventTarget.tagName !== 'I') return;
   if ($eventTarget.closest('.card-list > .card')) {
     const $card = $eventTarget.closest('.card');
     if ($card.dataset.baseId) {
-      const cardBaseId = parseInt($card.dataset.baseId);
-      const exercise = findExerciseByBaseId(cardBaseId);
-      if (exercise) handleFavoriteClick(exercise, $eventTarget);
+      const cardBaseId = $card.dataset.baseId;
+      if ($eventTarget.tagName !== 'I') {
+        populateExerciseDetails(parseInt(cardBaseId));
+        viewSwap('exercise-details');
+      } else if ($eventTarget.tagName === 'I') {
+        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
+        if (exercise) handleFavoriteClick(exercise, $eventTarget);
+      }
     }
-  } else {
+  }
+});
+$exerciseDetailSection.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if ($eventTarget.tagName === 'I') {
     const $section = $eventTarget.closest('section.details');
-    if ($section.dataset.baseId) {
-      const exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
-      if (exercise) handleFavoriteClick(exercise, $eventTarget);
-    }
+    const exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
+    if (exercise) handleFavoriteClick(exercise, $eventTarget);
   }
 });
