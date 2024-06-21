@@ -201,7 +201,6 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
       }
     }
   }
-  console.log(fitlogData.favorites);
 }
 function populateExerciseDetails(baseId) {
   $exerciseDetailSection.setAttribute('data-base-id', `${baseId}`);
