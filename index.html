@@ -95,7 +95,9 @@
             placeholder="Exercise" />
           <button type="submit" class="yellow-btn">Search</button>
         </form>
-        <div class="card-list flex wrap align-center" id="card-list"></div>
+        <div
+          class="card-list flex wrap align-center"
+          id="exercises-card-list"></div>
         <div class="no-results flex flex-col align-center hidden">
           <p class="" style="">No Results Found.</p>
           <img
@@ -136,10 +138,12 @@
         </div>
       </section>
       <section
-        class="favorites-view flex flex-col align-center"
+        class="favorites-view flex flex-col align-center hidden"
         data-view="favorites-view">
         <h1>Favorite Exercises</h1>
-        <div class="card-list flex wrap align-center"></div>
+        <div
+          class="card-list flex wrap align-center"
+          id="favorites-card-list"></div>
         <div class="no-results flex flex-col align-center hidden">
           <p class="" style="">No Results Found.</p>
           <img
