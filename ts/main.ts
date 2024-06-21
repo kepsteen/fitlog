@@ -52,8 +52,8 @@ const $detailsDescription = document.querySelector(
 const $exerciseDetailSection = document.querySelector(
   '#details-section',
 ) as HTMLElement;
-let $exercisesNodeList: NodeListOf<HTMLElement>;
-let $favoritesNodeList: NodeListOf<HTMLElement>;
+// let $exercisesNodeList: NodeListOf<HTMLElement>;
+// let $favoritesNodeList: NodeListOf<HTMLElement>;
 const $detailsHeart = document.querySelector(
   '.title-container > .fa-heart',
 ) as HTMLElement;
@@ -198,7 +198,7 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
-    $exercisesNodeList = document.querySelectorAll(
+    const $exercisesNodeList = document.querySelectorAll(
       '#exercises-card-list > .card',
     );
     if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
@@ -242,9 +242,10 @@ function handleFavoriteClick(
   exerciseObj: Exercise,
   targetIcon: HTMLElement,
 ): void {
-  $favoritesNodeList = document.querySelectorAll(
+  const $favoritesNodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
     '#favorites-card-list > .card',
   );
+  if (!$favoritesNodeList) throw new Error('no favorites node list found');
   if (targetIcon.classList.contains('fa-regular')) {
     targetIcon.classList.remove('fa-regular');
     targetIcon.classList.add('fa-solid');
@@ -269,6 +270,10 @@ function handleFavoriteClick(
       }
     }
   }
+  const $exercisesNodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
+    '#exercises-card-list > .card',
+  );
+  if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   for (let i = 0; i < $exercisesNodeList.length; i++) {
     const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
     if (parseInt(nodeBaseId) === exerciseObj.baseId) {
@@ -369,7 +374,10 @@ $exercisesCardList.addEventListener('click', (event: Event) => {
       if ($eventTarget.tagName !== 'I') {
         populateExerciseDetails(parseInt(cardBaseId));
         viewSwap('exercise-details');
-      } else if ($eventTarget.tagName === 'I') {
+      } else if (
+        $eventTarget.tagName === 'I' &&
+        $eventTarget.classList.contains('fa-heart')
+      ) {
         const exercise = findExerciseByBaseId(parseInt(cardBaseId));
         if (exercise) handleFavoriteClick(exercise, $eventTarget);
       }
