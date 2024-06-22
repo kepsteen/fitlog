@@ -144,12 +144,8 @@ async function fetchExerciseSearchData(term) {
     } else {
       $noResults?.classList.remove('hidden');
     }
-    const $exercisesNodeList = document.querySelectorAll(
-      '#exercises-card-list > .card',
-    );
-    if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 function viewSwap(view) {
@@ -327,7 +323,6 @@ $exercisesCardList.addEventListener('click', (event) => {
 });
 $favoritesCardList.addEventListener('click', (event) => {
   const $eventTarget = event.target;
-  console.log($eventTarget);
   if ($eventTarget.closest('.card-list > .card')) {
     const $card = $eventTarget.closest('.card');
     if ($card.dataset.baseId) {

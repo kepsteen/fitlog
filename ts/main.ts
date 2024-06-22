@@ -200,12 +200,8 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
     } else {
       $noResults?.classList.remove('hidden');
     }
-    const $exercisesNodeList = document.querySelectorAll(
-      '#exercises-card-list > .card',
-    );
-    if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -400,7 +396,6 @@ $exercisesCardList.addEventListener('click', (event: Event) => {
 
 $favoritesCardList.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
-  console.log($eventTarget);
   if ($eventTarget.closest('.card-list > .card')) {
     const $card = $eventTarget.closest('.card') as HTMLElement;
     if ($card.dataset.baseId) {
