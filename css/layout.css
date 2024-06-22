@@ -42,6 +42,10 @@
   flex-grow: 1;
 }
 
+.block {
+  display: block;
+}
+
 nav {
   height: 60px;
 }

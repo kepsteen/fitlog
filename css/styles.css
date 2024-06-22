@@ -1,8 +1,10 @@
 h1,
 h2,
 h3 {
+  max-width: 300px;
   font-family: 'Archivo Black', serif;
   color: #000814;
+  text-align: center;
 }
 
 h1 {
@@ -19,13 +21,16 @@ header {
 }
 
 p,
-span {
+span,
+label,
+select {
   color: #000814;
   font-family: Archivo, serif;
   font-size: 1rem;
 }
 
-input {
+input,
+select {
   border: 1px solid #c4c4c4;
   border-radius: 5px;
   padding-left: 10px;
@@ -85,7 +90,8 @@ a {
 }
 
 .nav-links a {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  white-space: nowrap;
 }
 
 .search-bar {
@@ -107,17 +113,13 @@ a {
   background-color: #ffd60a;
 }
 
-.begin {
+.big-btn {
   width: 200px;
+  margin: 0 auto;
 }
 
 .home {
   gap: 100px;
-}
-
-.home > h1 {
-  width: 300px;
-  text-align: center;
 }
 
 .card-list {
@@ -205,7 +207,34 @@ a {
   font-family: Archivo, serif;
 }
 
+.new-workout-container {
+  gap: 30px;
+}
+
+.new-workout-form {
+  max-width: 300px;
+  gap: 20px;
+}
+
+.new-workout-form > button {
+  width: 100%;
+}
+
+#num-days {
+  width: 100px;
+}
+
+.form-items {
+  gap: 6px;
+}
+
 @media only screen and (width >= 600px) {
+  h1,
+  h2,
+  h3 {
+    max-width: 400px;
+  }
+
   .menu {
     display: none;
   }
@@ -248,6 +277,12 @@ a {
 }
 
 @media only screen and (width >= 800px) {
+  h1,
+  h2,
+  h3 {
+    max-width: 500px;
+  }
+
   .details-img,
   .details-text {
     width: calc(50% - 40px);

@@ -44,6 +44,14 @@
                 >Favorites</a
               >
             </li>
+            <li>
+              <a
+                href="#"
+                data-view="new-workout"
+                class="new-workout-view-anchor"
+                >Create Workout</a
+              >
+            </li>
           </ul>
         </nav>
         <div class="menu flex justify-center align-center">
@@ -62,13 +70,19 @@
           <a href="#" class="favorites-view-anchor hamburger-link"
             >Favorites <i class="fa-solid fa-heart" style="color: #ffffff"></i
           ></a>
+          <a href="#" class="new-workout-view-anchor hamburger-link"
+            >Create Workout
+            <i class="fa-solid fa-pen-to-square" style="color: #ffffff"></i>
+          </a>
         </dialog>
       </div>
     </header>
     <main class="">
-      <section class="home flex flex-col align-center" data-view="home">
+      <section class="home flex flex-col align-center hidden" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
-        <button type="button" class="begin yellow-btn" id="begin">Begin</button>
+        <button type="button" class="big-btn yellow-btn" id="begin">
+          Begin
+        </button>
         <img
           src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
           alt="muscle-man-half"
@@ -150,6 +164,34 @@
           id="favorites-cta"
           >Add Exercises to Favorites</a
         >
+      </section>
+      <section
+        class="new-workout-container flex flex-col align-center"
+        data-view="new-workout">
+        <h1>Create a New Workout Plan</h1>
+        <form action="" class="new-workout-form flex flex-col">
+          <div class="form-items flex flex-col">
+            <label for="name" class="block">Name</label>
+            <input type="text" class="" id="name" />
+          </div>
+          <div class="form-items flex flex-col">
+            <label for="num-days" class=""
+              >How many days per week do you want to train?</label
+            >
+            <select name="num-days" class="" id="num-days">
+              <option value="1">1 day</option>
+              <option value="2">2 days</option>
+              <option value="3">3 days</option>
+              <option value="4">4 days</option>
+              <option value="5">5 days</option>
+              <option value="6">6 days</option>
+              <option value="7">7 days</option>
+            </select>
+          </div>
+          <button type="submit" class="yellow-btn big-btn">
+            Create new Plan
+          </button>
+        </form>
       </section>
     </main>
     <script src="js/data.js"></script>
