@@ -36,6 +36,14 @@
                 >Exercises</a
               >
             </li>
+            <li>
+              <a
+                href="#"
+                data-view="favorites-view"
+                class="favorites-view-anchor"
+                >Favorites</a
+              >
+            </li>
           </ul>
         </nav>
         <div class="menu flex justify-center align-center">
@@ -50,6 +58,9 @@
           <a href="#" class="exercises-view-anchor hamburger-link"
             >Exercises
             <i class="fa-solid fa-dumbbell" style="color: #ffffff"></i
+          ></a>
+          <a href="#" class="favorites-view-anchor hamburger-link"
+            >Favorites <i class="fa-solid fa-heart" style="color: #ffffff"></i
           ></a>
         </dialog>
       </div>
@@ -84,7 +95,9 @@
             placeholder="Exercise" />
           <button type="submit" class="yellow-btn">Search</button>
         </form>
-        <div class="card-list flex wrap align-center" id="card-list"></div>
+        <div
+          class="card-list flex wrap align-center"
+          id="exercises-card-list"></div>
         <div class="no-results flex flex-col align-center hidden">
           <p class="" style="">No Results Found.</p>
           <img
@@ -123,6 +136,20 @@
           <p id="details-description"></p>
           <button class="blue-btn">Add to Workout</button>
         </div>
+      </section>
+      <section
+        class="favorites-view flex flex-col align-center hidden"
+        data-view="favorites-view">
+        <h1>Favorite Exercises</h1>
+        <div
+          class="card-list flex wrap align-center"
+          id="favorites-card-list"></div>
+        <a
+          href="#"
+          class="blue-btn exercises-view-anchor cta-btn"
+          id="favorites-cta"
+          >Add Exercises to Favorites</a
+        >
       </section>
     </main>
     <script src="js/data.js"></script>
