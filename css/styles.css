@@ -103,6 +103,10 @@ a {
   color: white;
 }
 
+.yellow-btn:hover {
+  background-color: #ffd60a;
+}
+
 .begin {
   width: 200px;
 }
@@ -195,6 +199,10 @@ a {
   border-radius: 5px;
   background-color: #003566;
   color: white;
+}
+
+.cta-btn {
+  font-family: Archivo, serif;
 }
 
 @media only screen and (width >= 600px) {

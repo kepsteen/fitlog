@@ -52,14 +52,15 @@ const $detailsDescription = document.querySelector(
 const $exerciseDetailSection = document.querySelector(
   '#details-section',
 ) as HTMLElement;
-// let $exercisesNodeList: NodeListOf<HTMLElement>;
-// let $favoritesNodeList: NodeListOf<HTMLElement>;
 const $detailsHeart = document.querySelector(
   '.title-container > .fa-heart',
 ) as HTMLElement;
 const $favoritesCardList = document.querySelector(
   '#favorites-card-list',
 ) as HTMLElement;
+const $favoritesCta = document.querySelector(
+  '#favorites-cta',
+) as HTMLAnchorElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -76,6 +77,7 @@ if (!$detailsDescription) throw new Error('no description details found');
 if (!$exerciseDetailSection) throw new Error('no exercise view section found');
 if (!$detailsHeart) throw new Error('no heart found');
 if (!$favoritesCardList) throw new Error('no favorite cardlist found');
+if (!$favoritesCta) throw new Error('no favorites cta found');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
@@ -249,9 +251,10 @@ function handleFavoriteClick(
   if (targetIcon.classList.contains('fa-regular')) {
     targetIcon.classList.remove('fa-regular');
     targetIcon.classList.add('fa-solid');
-    fitlogData.favorites.push(exerciseObj);
     exerciseObj.favorite = true;
+    fitlogData.favorites.push(exerciseObj);
     $favoritesCardList.appendChild(renderExercises(exerciseObj));
+    $favoritesCta.classList.add('hidden');
   } else if (targetIcon.classList.contains('fa-solid')) {
     targetIcon.classList.remove('fa-solid');
     targetIcon.classList.add('fa-regular');
@@ -269,6 +272,8 @@ function handleFavoriteClick(
         $favoritesCardList.removeChild($favoritesNodeList[i]);
       }
     }
+    if (fitlogData.favorites.length === 0)
+      $favoritesCta.classList.remove('hidden');
   }
   const $exercisesNodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
     '#exercises-card-list > .card',
@@ -325,6 +330,14 @@ function populateExerciseDetails(baseId: number): void {
   }
   $detailsDescription.innerHTML = exercise.description;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  fitlogData.favorites.forEach((exercise: Exercise) => {
+    $favoritesCardList.appendChild(renderExercises(exercise));
+  });
+  if (fitlogData.favorites.length === 0)
+    $favoritesCta.classList.remove('hidden');
+});
 
 $beginBtn.addEventListener('click', () => {
   viewSwap('exercises-view');
@@ -387,6 +400,7 @@ $exercisesCardList.addEventListener('click', (event: Event) => {
 
 $favoritesCardList.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
+  console.log($eventTarget);
   if ($eventTarget.closest('.card-list > .card')) {
     const $card = $eventTarget.closest('.card') as HTMLElement;
     if ($card.dataset.baseId) {
@@ -413,8 +427,6 @@ $exerciseDetailSection.addEventListener('click', (event: Event) => {
   }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  fitlogData.favorites.forEach((exercise: Exercise) => {
-    $favoritesCardList.appendChild(renderExercises(exercise));
-  });
+$favoritesCta.addEventListener('click', () => {
+  viewSwap('exercises-view');
 });

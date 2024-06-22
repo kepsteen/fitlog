@@ -15,10 +15,9 @@ const $detailsMuscleSec = document.querySelector('#details-muscle-sec');
 const $detailsEquipment = document.querySelector('#details-equipment');
 const $detailsDescription = document.querySelector('#details-description');
 const $exerciseDetailSection = document.querySelector('#details-section');
-// let $exercisesNodeList: NodeListOf<HTMLElement>;
-// let $favoritesNodeList: NodeListOf<HTMLElement>;
 const $detailsHeart = document.querySelector('.title-container > .fa-heart');
 const $favoritesCardList = document.querySelector('#favorites-card-list');
+const $favoritesCta = document.querySelector('#favorites-cta');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -34,6 +33,7 @@ if (!$detailsDescription) throw new Error('no description details found');
 if (!$exerciseDetailSection) throw new Error('no exercise view section found');
 if (!$detailsHeart) throw new Error('no heart found');
 if (!$favoritesCardList) throw new Error('no favorite cardlist found');
+if (!$favoritesCta) throw new Error('no favorites cta found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -188,9 +188,10 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
   if (targetIcon.classList.contains('fa-regular')) {
     targetIcon.classList.remove('fa-regular');
     targetIcon.classList.add('fa-solid');
-    fitlogData.favorites.push(exerciseObj);
     exerciseObj.favorite = true;
+    fitlogData.favorites.push(exerciseObj);
     $favoritesCardList.appendChild(renderExercises(exerciseObj));
+    $favoritesCta.classList.add('hidden');
   } else if (targetIcon.classList.contains('fa-solid')) {
     targetIcon.classList.remove('fa-solid');
     targetIcon.classList.add('fa-regular');
@@ -208,6 +209,8 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
         $favoritesCardList.removeChild($favoritesNodeList[i]);
       }
     }
+    if (fitlogData.favorites.length === 0)
+      $favoritesCta.classList.remove('hidden');
   }
   const $exercisesNodeList = document.querySelectorAll(
     '#exercises-card-list > .card',
@@ -263,6 +266,13 @@ function populateExerciseDetails(baseId) {
   }
   $detailsDescription.innerHTML = exercise.description;
 }
+document.addEventListener('DOMContentLoaded', () => {
+  fitlogData.favorites.forEach((exercise) => {
+    $favoritesCardList.appendChild(renderExercises(exercise));
+  });
+  if (fitlogData.favorites.length === 0)
+    $favoritesCta.classList.remove('hidden');
+});
 $beginBtn.addEventListener('click', () => {
   viewSwap('exercises-view');
 });
@@ -317,6 +327,7 @@ $exercisesCardList.addEventListener('click', (event) => {
 });
 $favoritesCardList.addEventListener('click', (event) => {
   const $eventTarget = event.target;
+  console.log($eventTarget);
   if ($eventTarget.closest('.card-list > .card')) {
     const $card = $eventTarget.closest('.card');
     if ($card.dataset.baseId) {
@@ -339,8 +350,6 @@ $exerciseDetailSection.addEventListener('click', (event) => {
     if (exercise) handleFavoriteClick(exercise, $eventTarget);
   }
 });
-document.addEventListener('DOMContentLoaded', () => {
-  fitlogData.favorites.forEach((exercise) => {
-    $favoritesCardList.appendChild(renderExercises(exercise));
-  });
+$favoritesCta.addEventListener('click', () => {
+  viewSwap('exercises-view');
 });
