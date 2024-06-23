@@ -21,10 +21,12 @@
     <header>
       <div class="navbar flex space-between">
         <div class="logo flex align-center">
-          <img
-            class="fitlog"
-            src="images/logo.svg"
-            alt="muscle man half with fitlog logo" />
+          <a href="#"
+            ><img
+              class="fitlog home-view-anchor"
+              src="images/logo.svg"
+              alt="fitlog logo"
+          /></a>
         </div>
         <nav class="nav-links">
           <ul class="">
@@ -78,7 +80,7 @@
       </div>
     </header>
     <main class="">
-      <section class="home flex flex-col align-center hidden" data-view="home">
+      <section class="home flex flex-col align-center" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="big-btn yellow-btn" id="begin">
           Begin
@@ -166,7 +168,7 @@
         >
       </section>
       <section
-        class="new-workout-container flex flex-col align-center"
+        class="new-workout-container flex flex-col align-center hidden"
         data-view="new-workout">
         <h1>Create a New Workout Plan</h1>
         <form action="" class="new-workout-form flex flex-col">
@@ -175,10 +177,10 @@
             <input type="text" class="" id="name" />
           </div>
           <div class="form-items flex flex-col">
-            <label for="num-days" class=""
+            <label for="days" class=""
               >How many days per week do you want to train?</label
             >
-            <select name="num-days" class="" id="num-days">
+            <select name="days" class="" id="days">
               <option value="1">1 day</option>
               <option value="2">2 days</option>
               <option value="3">3 days</option>

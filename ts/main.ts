@@ -21,6 +21,17 @@ interface Exercise {
   favorite: boolean;
 }
 
+interface Workout {
+  name: string;
+  days: number;
+  exercises: Exercise[];
+}
+
+interface FormElements extends HTMLFormControlsCollection {
+  name: HTMLInputElement;
+  days: HTMLSelectElement;
+}
+
 let exerciseObjArr: Exercise[] = [];
 
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
@@ -61,6 +72,9 @@ const $favoritesCardList = document.querySelector(
 const $favoritesCta = document.querySelector(
   '#favorites-cta',
 ) as HTMLAnchorElement;
+const $newWorkoutForm = document.querySelector(
+  '.new-workout-form',
+) as HTMLFormElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -78,6 +92,7 @@ if (!$exerciseDetailSection) throw new Error('no exercise view section found');
 if (!$detailsHeart) throw new Error('no heart found');
 if (!$favoritesCardList) throw new Error('no favorite cardlist found');
 if (!$favoritesCta) throw new Error('no favorites cta found');
+if (!$newWorkoutForm) throw new Error('no new workout form');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
@@ -371,6 +386,14 @@ $header.addEventListener('click', (event: Event) => {
       $hamburger?.classList.toggle('hidden');
       $hamburgerLinks?.classList.toggle('hidden');
     }
+  } else if ($eventTarget.classList.contains('new-workout-view-anchor')) {
+    viewSwap('new-workout');
+    if ($eventTarget.classList.contains('hamburger-link')) {
+      $hamburger?.classList.toggle('hidden');
+      $hamburgerLinks?.classList.toggle('hidden');
+    }
+  } else if ($eventTarget.classList.contains('home-view-anchor')) {
+    viewSwap('home');
   }
 });
 
@@ -424,4 +447,15 @@ $exerciseDetailSection.addEventListener('click', (event: Event) => {
 
 $favoritesCta.addEventListener('click', () => {
   viewSwap('exercises-view');
+});
+
+$newWorkoutForm.addEventListener('submit', (event: Event) => {
+  event.preventDefault();
+  const $formElements = $newWorkoutForm.elements as FormElements;
+  const newWorkout: Workout = {
+    name: $formElements.name.value,
+    days: parseInt($formElements.days.value),
+    exercises: [],
+  };
+  fitlogData.workouts.push(newWorkout);
 });
