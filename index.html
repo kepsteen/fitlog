@@ -111,9 +111,23 @@
             placeholder="Exercise" />
           <button type="submit" class="yellow-btn">Search</button>
         </form>
-        <div
-          class="card-list flex wrap align-center"
-          id="exercises-card-list"></div>
+        <div class="card-list flex wrap align-center" id="exercises-card-list">
+          <!-- Example card -->
+          <div class="card flex space-between" data-base-id="1012">
+            <img
+              src="https://wger.de/media/exercise-images/1012/8270fdb8-28f1-4eff-b410-af8642085b3f.png"
+              class="card-img" />
+            <div class="card-text"><h3>Alternating bicep curls</h3></div>
+            <div>
+              <i
+                class="fa-regular fa-heart"
+                style="color: #ffc300"
+                aria-hidden="true"></i>
+              <i class="fa-solid fa-pen-to-square" style="color: #001d3d"></i>
+            </div>
+          </div>
+          <!-- end of example -->
+        </div>
         <div class="no-results flex flex-col align-center hidden">
           <p>No Results Found.</p>
           <img
@@ -150,7 +164,9 @@
           </p>
           <p class="details-property">Description:</p>
           <p id="details-description"></p>
-          <button class="blue-btn">Add to Workout</button>
+          <button type="button" class="add-exercise-btn blue-btn">
+            Add to Workout
+          </button>
         </div>
       </section>
       <section
@@ -195,6 +211,11 @@
           </button>
         </form>
       </section>
+      <dialog class="add-exercise-modal">
+        <i class="fa-solid fa-x" style="color: #001d3d"></i>
+        <h1>Add to Workout:</h1>
+        <form action="" id="add-exercise-form"></form>
+      </dialog>
     </main>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>

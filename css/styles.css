@@ -228,6 +228,20 @@ a {
   gap: 6px;
 }
 
+.add-exercise-modal {
+  border-color: transparent;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.add-exercise-modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.add-exercise-modal > h1 {
+  color: #001d3d;
+}
+
 @media only screen and (width >= 600px) {
   h1,
   h2,
@@ -262,7 +276,6 @@ a {
   }
 
   .details-title {
-    /* width: 100%; */
     text-align: center;
   }
 

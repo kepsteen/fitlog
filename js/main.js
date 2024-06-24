@@ -1,4 +1,6 @@
 'use strict';
+// interface AddExerciseFormElements extends HTMLFormControlsCollection {
+// }
 let exerciseObjArr = [];
 const $searchForm = document.querySelector('#search-form');
 const $views = document.querySelectorAll('section');
@@ -19,6 +21,9 @@ const $detailsHeart = document.querySelector('.title-container > .fa-heart');
 const $favoritesCardList = document.querySelector('#favorites-card-list');
 const $favoritesCta = document.querySelector('#favorites-cta');
 const $newWorkoutForm = document.querySelector('.new-workout-form');
+const $addExerciseBtn = document.querySelector('.add-exercise-btn');
+const $addExerciseModal = document.querySelector('.add-exercise-modal');
+const $addExerciseForm = document.querySelector('#add-exercise-form');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -36,6 +41,9 @@ if (!$detailsHeart) throw new Error('no heart found');
 if (!$favoritesCardList) throw new Error('no favorite cardlist found');
 if (!$favoritesCta) throw new Error('no favorites cta found');
 if (!$newWorkoutForm) throw new Error('no new workout form');
+if (!$addExerciseBtn) throw new Error('no add exercise btn found');
+if (!$addExerciseModal) throw new Error('no add exercise modal found');
+if (!$addExerciseForm) throw new Error('no add exercise form found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -228,10 +236,8 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
     }
   }
 }
-function populateExerciseDetails(baseId) {
-  $exerciseDetailSection.setAttribute('data-base-id', `${baseId}`);
-  const exercise = findExerciseByBaseId(baseId);
-  if (!exercise) return;
+function populateExerciseDetails(exercise) {
+  $exerciseDetailSection.setAttribute('data-base-id', `${exercise.baseId}`);
   $detailsTitle.textContent = exercise.name + ' ';
   if (exercise.favorite)
     $detailsHeart.setAttribute('class', 'fa-solid fa-heart');
@@ -263,6 +269,27 @@ function populateExerciseDetails(baseId) {
     $detailsEquipment.textContent = 'no data found.';
   }
   $detailsDescription.innerHTML = exercise.description;
+}
+function renderAddExerciseForm() {
+  fitlogData.workouts.forEach((workout) => {
+    const $label = document.createElement('label');
+    $label.setAttribute('for', `${workout.workoutId}`);
+    $label.textContent = `${workout.name}`;
+    const $checkbox = document.createElement('input');
+    $checkbox.setAttribute('type', 'checkbox');
+    $checkbox.setAttribute('name', `workout-${workout.workoutId}-checkbox`);
+    $checkbox.setAttribute('id', `workout-${workout.workoutId}`);
+    $checkbox.setAttribute('value', `${workout.workoutId}`);
+    $addExerciseForm.appendChild($label);
+    $addExerciseForm.appendChild($checkbox);
+  });
+  const $div = document.createElement('div');
+  const $submitBtn = document.createElement('button');
+  $submitBtn.setAttribute('type', 'submit');
+  $submitBtn.setAttribute('class', 'yellow-btn');
+  $submitBtn.textContent = 'Submit';
+  $div.appendChild($submitBtn);
+  $addExerciseForm.appendChild($div);
 }
 document.addEventListener('DOMContentLoaded', () => {
   fitlogData.favorites.forEach((exercise) => {
@@ -319,7 +346,10 @@ $exercisesCardList.addEventListener('click', (event) => {
     if ($card.dataset.baseId) {
       const cardBaseId = $card.dataset.baseId;
       if ($eventTarget.tagName !== 'I') {
-        populateExerciseDetails(parseInt(cardBaseId));
+        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
+        if (!exercise) return;
+        fitlogData.viewing = exercise;
+        populateExerciseDetails(exercise);
         viewSwap('exercise-details');
       } else if (
         $eventTarget.tagName === 'I' &&
@@ -338,7 +368,10 @@ $favoritesCardList.addEventListener('click', (event) => {
     if ($card.dataset.baseId) {
       const cardBaseId = $card.dataset.baseId;
       if ($eventTarget.tagName !== 'I') {
-        populateExerciseDetails(parseInt(cardBaseId));
+        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
+        if (!exercise) return;
+        fitlogData.viewing = exercise;
+        populateExerciseDetails(exercise);
         viewSwap('exercise-details');
       } else if ($eventTarget.tagName === 'I') {
         const exercise = findExerciseByBaseId(parseInt(cardBaseId));
@@ -349,10 +382,16 @@ $favoritesCardList.addEventListener('click', (event) => {
 });
 $exerciseDetailSection.addEventListener('click', (event) => {
   const $eventTarget = event.target;
-  if ($eventTarget.tagName === 'I') {
-    const $section = $eventTarget.closest('section.details');
-    const exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
+  const $section = $eventTarget.closest('section.details');
+  const exercise = findExerciseByBaseId(parseInt($section.dataset.baseId));
+  if (
+    $eventTarget.tagName === 'I' &&
+    $eventTarget.classList.contains('fa-heart')
+  ) {
     if (exercise) handleFavoriteClick(exercise, $eventTarget);
+  } else if ($eventTarget.classList.contains('add-exercise-btn')) {
+    renderAddExerciseForm();
+    if (exercise) $addExerciseModal.showModal();
   }
 });
 $favoritesCta.addEventListener('click', () => {
@@ -365,8 +404,36 @@ $newWorkoutForm.addEventListener('submit', (event) => {
     name: $formElements.name.value,
     days: parseInt($formElements.days.value),
     exercises: [],
+    workoutId: fitlogData.nextWorkoutId,
   };
+  fitlogData.nextWorkoutId++;
   fitlogData.workouts.push(newWorkout);
+  console.log(fitlogData.workouts);
   $newWorkoutForm.reset();
   viewSwap('exercises-view');
+});
+$addExerciseModal.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if ($eventTarget.classList.contains('fa-x')) {
+    $addExerciseModal.close();
+    while ($addExerciseForm.hasChildNodes()) {
+      if ($addExerciseForm.firstChild) {
+        $addExerciseForm.removeChild($addExerciseForm.firstChild);
+      }
+    }
+  }
+});
+$addExerciseForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const selectedWorkoutIds = [];
+  const checkboxes = $addExerciseForm.querySelectorAll(
+    '#add-exercise-form > input[type="checkbox"]:checked',
+  );
+  checkboxes.forEach((checkbox) => {
+    const $checkbox = checkbox;
+    selectedWorkoutIds.push(parseInt($checkbox.value));
+  });
+  console.log('selected workouts', selectedWorkoutIds);
+  $addExerciseForm.reset();
+  $addExerciseModal.close();
 });

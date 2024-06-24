@@ -2,11 +2,15 @@
 interface Data {
   favorites: Exercise[];
   workouts: Workout[];
+  nextWorkoutId: number;
+  viewing: null | Exercise;
 }
 
-let fitlogData: Data = {
+const fitlogData: Data = {
   favorites: [],
   workouts: [],
+  nextWorkoutId: 1,
+  viewing: null,
 };
 
 window.addEventListener('beforeunload', () => {
@@ -14,8 +18,8 @@ window.addEventListener('beforeunload', () => {
   localStorage.setItem('fitlog-data', dataJSON);
 });
 
-const previousJSON = localStorage.getItem('fitlog-data');
-if (previousJSON) {
-  const parsedDataJSON = JSON.parse(previousJSON);
-  fitlogData = parsedDataJSON;
-}
+// const previousJSON = localStorage.getItem('fitlog-data');
+// if (previousJSON) {
+//   const parsedDataJSON = JSON.parse(previousJSON);
+//   fitlogData = parsedDataJSON;
+// }
