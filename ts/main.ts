@@ -33,10 +33,6 @@ interface NewWorkoutFormElements extends HTMLFormControlsCollection {
   days: HTMLSelectElement;
 }
 
-// interface AddExerciseFormElements extends HTMLFormControlsCollection {
-
-// }
-
 let exerciseObjArr: Exercise[] = [];
 
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
@@ -121,10 +117,12 @@ function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   $cardImg.setAttribute('class', 'card-img');
 
   const $cardText = document.createElement('div');
-  $cardText.setAttribute('class', 'card-text');
+  $cardText.setAttribute('class', 'card-text flex flex-col space-between');
   const $cardTitle = document.createElement('h3');
   $cardTitle.textContent = exerciseObj.name;
 
+  const $cardIcons = document.createElement('div');
+  $cardIcons.setAttribute('class', 'card-icons flex justify-end');
   const $heart = document.createElement('i');
   if (exerciseObj.favorite) {
     $heart.setAttribute('class', 'fa-solid fa-heart');
@@ -132,11 +130,16 @@ function renderExercises(exerciseObj: Exercise): HTMLDivElement {
     $heart.setAttribute('class', 'fa-regular fa-heart');
   }
   $heart.setAttribute('style', 'color: #FFC300;');
+  const $pencil = document.createElement('i');
+  $pencil.setAttribute('class', 'fa-solid fa-pen-to-square');
+  $pencil.setAttribute('style', 'color: #001d3d');
 
+  $cardIcons.appendChild($pencil);
+  $cardIcons.appendChild($heart);
   $cardText.appendChild($cardTitle);
+  $cardText.appendChild($cardIcons);
   $card.appendChild($cardImg);
   $card.appendChild($cardText);
-  $card.appendChild($heart);
   return $card;
 }
 
@@ -359,6 +362,7 @@ function populateExerciseDetails(exercise: Exercise): void {
 
 function renderAddExerciseForm(): void {
   fitlogData.workouts.forEach((workout: Workout) => {
+    const $div = document.createElement('div');
     const $label = document.createElement('label');
     $label.setAttribute('for', `${workout.workoutId}`);
     $label.textContent = `${workout.name}`;
@@ -369,11 +373,13 @@ function renderAddExerciseForm(): void {
     $checkbox.setAttribute('id', `workout-${workout.workoutId}`);
     $checkbox.setAttribute('value', `${workout.workoutId}`);
 
-    $addExerciseForm.appendChild($label);
-    $addExerciseForm.appendChild($checkbox);
+    $div.appendChild($label);
+    $div.appendChild($checkbox);
+    $addExerciseForm.appendChild($div);
   });
 
   const $div = document.createElement('div');
+  $div.setAttribute('class', 'flex justify-center');
   const $submitBtn = document.createElement('button');
   $submitBtn.setAttribute('type', 'submit');
   $submitBtn.setAttribute('class', 'yellow-btn');
@@ -455,6 +461,12 @@ $exercisesCardList.addEventListener('click', (event: Event) => {
       ) {
         const exercise = findExerciseByBaseId(parseInt(cardBaseId));
         if (exercise) handleFavoriteClick(exercise, $eventTarget);
+        fitlogData.viewing = exercise;
+      } else if ($eventTarget.classList.contains('fa-pen-to-square')) {
+        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
+        fitlogData.viewing = exercise;
+        renderAddExerciseForm();
+        $addExerciseModal.showModal();
       }
     }
   }
@@ -472,9 +484,17 @@ $favoritesCardList.addEventListener('click', (event: Event) => {
         fitlogData.viewing = exercise;
         populateExerciseDetails(exercise);
         viewSwap('exercise-details');
-      } else if ($eventTarget.tagName === 'I') {
+      } else if (
+        $eventTarget.tagName === 'I' &&
+        $eventTarget.classList.contains('fa-heart')
+      ) {
         const exercise = findExerciseByBaseId(parseInt(cardBaseId));
         if (exercise) handleFavoriteClick(exercise, $eventTarget);
+      } else if ($eventTarget.classList.contains('fa-pen-to-square')) {
+        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
+        fitlogData.viewing = exercise;
+        renderAddExerciseForm();
+        $addExerciseModal.showModal();
       }
     }
   }
@@ -512,7 +532,6 @@ $newWorkoutForm.addEventListener('submit', (event: Event) => {
   };
   fitlogData.nextWorkoutId++;
   fitlogData.workouts.push(newWorkout);
-  console.log(fitlogData.workouts);
   $newWorkoutForm.reset();
   viewSwap('exercises-view');
 });
@@ -533,20 +552,20 @@ $addExerciseForm.addEventListener('submit', (event: Event): void => {
   event.preventDefault();
   const selectedWorkoutIds: number[] = [];
   const checkboxes = $addExerciseForm.querySelectorAll(
-    '#add-exercise-form > input[type="checkbox"]:checked',
+    '#add-exercise-form input[type="checkbox"]:checked',
   );
   checkboxes.forEach((checkbox) => {
     const $checkbox = checkbox as HTMLInputElement;
     selectedWorkoutIds.push(parseInt($checkbox.value));
   });
   const currentExercise = fitlogData.viewing as Exercise;
-  for (let i = 0; i < fitlogData.workouts.length; i++) {
-    for (let j = 0; j < selectedWorkoutIds.length; j++) {
-      if (fitlogData.workouts[i].workoutId === selectedWorkoutIds[i]) {
-        fitlogData.workouts[i].exercises.push(currentExercise);
-      }
-    }
-  }
+
+  const selectedWorkouts = fitlogData.workouts.filter((workout) =>
+    selectedWorkoutIds.includes(workout.workoutId),
+  );
+  selectedWorkouts.forEach((workout) => {
+    workout.exercises.push(currentExercise);
+  });
   $addExerciseForm.reset();
   $addExerciseModal.close();
   while ($addExerciseForm.hasChildNodes()) {
@@ -554,5 +573,6 @@ $addExerciseForm.addEventListener('submit', (event: Event): void => {
       $addExerciseForm.removeChild($addExerciseForm.firstChild);
     }
   }
-  console.log(fitlogData.workouts);
 });
+
+fitlogData.workouts = [];
