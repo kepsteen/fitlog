@@ -1,6 +1,7 @@
 'use strict';
 let fitlogData = {
   favorites: [],
+  workouts: [],
 };
 window.addEventListener('beforeunload', () => {
   const dataJSON = JSON.stringify(fitlogData);

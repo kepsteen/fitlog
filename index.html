@@ -21,13 +21,15 @@
     <header>
       <div class="navbar flex space-between">
         <div class="logo flex align-center">
-          <img
-            class="fitlog"
-            src="images/logo.svg"
-            alt="muscle man half with fitlog logo" />
+          <a href="#"
+            ><img
+              class="fitlog home-view-anchor"
+              src="images/logo.svg"
+              alt="fitlog logo"
+          /></a>
         </div>
         <nav class="nav-links">
-          <ul class="">
+          <ul>
             <li>
               <a
                 href="#"
@@ -42,6 +44,14 @@
                 data-view="favorites-view"
                 class="favorites-view-anchor"
                 >Favorites</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                data-view="new-workout"
+                class="new-workout-view-anchor"
+                >Create Workout</a
               >
             </li>
           </ul>
@@ -62,13 +72,19 @@
           <a href="#" class="favorites-view-anchor hamburger-link"
             >Favorites <i class="fa-solid fa-heart" style="color: #ffffff"></i
           ></a>
+          <a href="#" class="new-workout-view-anchor hamburger-link"
+            >Create Workout
+            <i class="fa-solid fa-pen-to-square" style="color: #ffffff"></i>
+          </a>
         </dialog>
       </div>
     </header>
-    <main class="">
+    <main>
       <section class="home flex flex-col align-center" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
-        <button type="button" class="begin yellow-btn" id="begin">Begin</button>
+        <button type="button" class="big-btn yellow-btn" id="begin">
+          Begin
+        </button>
         <img
           src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
           alt="muscle-man-half"
@@ -86,7 +102,7 @@
         class="exercises-view flex flex-col align-center hidden"
         data-view="exercises-view">
         <h1>Search for Exercises</h1>
-        <form action="" id="search-form">
+        <form id="search-form">
           <label for="search"></label>
           <input
             type="text"
@@ -99,7 +115,7 @@
           class="card-list flex wrap align-center"
           id="exercises-card-list"></div>
         <div class="no-results flex flex-col align-center hidden">
-          <p class="" style="">No Results Found.</p>
+          <p>No Results Found.</p>
           <img
             src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
             alt="muscle man half with fitlog logo" />
@@ -150,6 +166,34 @@
           id="favorites-cta"
           >Add Exercises to Favorites</a
         >
+      </section>
+      <section
+        class="new-workout-container flex flex-col align-center hidden"
+        data-view="new-workout">
+        <h1>Create a New Workout Plan</h1>
+        <form class="new-workout-form flex flex-col">
+          <div class="form-items flex flex-col">
+            <div><label for="name">Name</label></div>
+            <input type="text" id="name" required />
+          </div>
+          <div class="form-items flex flex-col">
+            <label for="days"
+              >How many days per week do you want to train?</label
+            >
+            <select name="days" id="days">
+              <option value="1">1 day</option>
+              <option value="2">2 days</option>
+              <option value="3">3 days</option>
+              <option value="4">4 days</option>
+              <option value="5">5 days</option>
+              <option value="6">6 days</option>
+              <option value="7">7 days</option>
+            </select>
+          </div>
+          <button type="submit" class="yellow-btn big-btn">
+            Create new Plan
+          </button>
+        </form>
       </section>
     </main>
     <script src="js/data.js"></script>
