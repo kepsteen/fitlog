@@ -367,4 +367,6 @@ $newWorkoutForm.addEventListener('submit', (event) => {
     exercises: [],
   };
   fitlogData.workouts.push(newWorkout);
+  $newWorkoutForm.reset();
+  viewSwap('exercises-view');
 });

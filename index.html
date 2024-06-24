@@ -29,7 +29,7 @@
           /></a>
         </div>
         <nav class="nav-links">
-          <ul class="">
+          <ul>
             <li>
               <a
                 href="#"
@@ -79,7 +79,7 @@
         </dialog>
       </div>
     </header>
-    <main class="">
+    <main>
       <section class="home flex flex-col align-center" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="big-btn yellow-btn" id="begin">
@@ -102,7 +102,7 @@
         class="exercises-view flex flex-col align-center hidden"
         data-view="exercises-view">
         <h1>Search for Exercises</h1>
-        <form action="" id="search-form">
+        <form id="search-form">
           <label for="search"></label>
           <input
             type="text"
@@ -115,7 +115,7 @@
           class="card-list flex wrap align-center"
           id="exercises-card-list"></div>
         <div class="no-results flex flex-col align-center hidden">
-          <p class="" style="">No Results Found.</p>
+          <p>No Results Found.</p>
           <img
             src="images/male-silhouette-variant-showing-muscles-svgrepo-com (1) 1.svg"
             alt="muscle man half with fitlog logo" />
@@ -171,16 +171,16 @@
         class="new-workout-container flex flex-col align-center hidden"
         data-view="new-workout">
         <h1>Create a New Workout Plan</h1>
-        <form action="" class="new-workout-form flex flex-col">
+        <form class="new-workout-form flex flex-col">
           <div class="form-items flex flex-col">
-            <label for="name" class="block">Name</label>
-            <input type="text" class="" id="name" />
+            <div><label for="name">Name</label></div>
+            <input type="text" id="name" required />
           </div>
           <div class="form-items flex flex-col">
-            <label for="days" class=""
+            <label for="days"
               >How many days per week do you want to train?</label
             >
-            <select name="days" class="" id="days">
+            <select name="days" id="days">
               <option value="1">1 day</option>
               <option value="2">2 days</option>
               <option value="3">3 days</option>
