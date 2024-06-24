@@ -6,7 +6,7 @@ interface Data {
   viewing: null | Exercise;
 }
 
-const fitlogData: Data = {
+let fitlogData: Data = {
   favorites: [],
   workouts: [],
   nextWorkoutId: 1,
@@ -18,8 +18,8 @@ window.addEventListener('beforeunload', () => {
   localStorage.setItem('fitlog-data', dataJSON);
 });
 
-// const previousJSON = localStorage.getItem('fitlog-data');
-// if (previousJSON) {
-//   const parsedDataJSON = JSON.parse(previousJSON);
-//   fitlogData = parsedDataJSON;
-// }
+const previousJSON = localStorage.getItem('fitlog-data');
+if (previousJSON) {
+  const parsedDataJSON = JSON.parse(previousJSON);
+  fitlogData = parsedDataJSON;
+}

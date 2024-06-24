@@ -433,7 +433,20 @@ $addExerciseForm.addEventListener('submit', (event) => {
     const $checkbox = checkbox;
     selectedWorkoutIds.push(parseInt($checkbox.value));
   });
-  console.log('selected workouts', selectedWorkoutIds);
+  const currentExercise = fitlogData.viewing;
+  for (let i = 0; i < fitlogData.workouts.length; i++) {
+    for (let j = 0; j < selectedWorkoutIds.length; j++) {
+      if (fitlogData.workouts[i].workoutId === selectedWorkoutIds[i]) {
+        fitlogData.workouts[i].exercises.push(currentExercise);
+      }
+    }
+  }
   $addExerciseForm.reset();
   $addExerciseModal.close();
+  while ($addExerciseForm.hasChildNodes()) {
+    if ($addExerciseForm.firstChild) {
+      $addExerciseForm.removeChild($addExerciseForm.firstChild);
+    }
+  }
+  console.log(fitlogData.workouts);
 });
