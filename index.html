@@ -47,6 +47,11 @@
               >
             </li>
             <li>
+              <a href="#" data-view="workouts-view" class="workouts-view-anchor"
+                >Workouts</a
+              >
+            </li>
+            <li>
               <a
                 href="#"
                 data-view="new-workout"
@@ -72,6 +77,10 @@
           <a href="#" class="favorites-view-anchor hamburger-link"
             >Favorites <i class="fa-solid fa-heart" style="color: #ffffff"></i
           ></a>
+          <a href="#" class="workouts-view-anchor hamburger-link"
+            >Workouts
+            <i class="fa-solid fa-pen-to-square" style="color: #ffffff"></i>
+          </a>
           <a href="#" class="new-workout-view-anchor hamburger-link"
             >Create Workout
             <i class="fa-solid fa-pen-to-square" style="color: #ffffff"></i>
@@ -80,7 +89,7 @@
       </div>
     </header>
     <main>
-      <section class="home flex flex-col align-center" data-view="home">
+      <section class="home flex flex-col align-center hidden" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="big-btn yellow-btn" id="begin">
           Begin
@@ -198,36 +207,100 @@
         </form>
       </section>
       <section
-        class="workouts flex flex-col align-center hidden"
+        class="workouts flex flex-col align-center"
         data-view="workouts-view">
         <!-- example workout -->
         <!-- <div class="workout" data-workout-id="1">
           <div class="workout-title flex" style="gap: 10px">
-            <h1>Workout 1</h1>
-            <div class="flex align-center">
-              <i class="fa-solid fa-caret-right"></i>
+            <h1>Workout render</h1>
+            <div class="caret-container flex align-center">
+              <i class="fa-solid fa-caret-right" aria-hidden="true"></i>
             </div>
           </div>
-          <div class="days-container flex wrap" style="gap: 20px">
+          <div class="workout-data-container flex hidden" data-workout-id="77">
             <div class="exercises">
               <h3>Exercises</h3>
               <ul>
-                <li data-workout-id="1" data-base-id="1">Squat</li>
-                <li data-workout-id="1" data-base-id="2">bench</li>
-                <li data-workout-id="1" data-base-id="3">curl</li>
+                <li data-base-id="1" data-workout-id="1" draggable="true">
+                  squat
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
+                <li data-base-id="2" data-workout-id="1" draggable="true">
+                  lunge
+                </li>
               </ul>
             </div>
-            <div class="day">
-              <h3>Day 1</h3>
-              <ul class="target-1" data-num-day="1"></ul>
-            </div>
-            <div class="day">
-              <h3>Day 2</h3>
-              <ul class="target-1" data-num-day="2"></ul>
-            </div>
-            <div class="day">
-              <h3>Day 3</h3>
-              <ul class="target-1" data-num-day="3"></ul>
+            <div class="days-container flex justify-center wrap">
+              <div class="day">
+                <h3>Day 1</h3>
+                <ul data-num-day="1" class="target-1"></ul>
+              </div>
+              <div class="day">
+                <h3>Day 2</h3>
+                <ul data-num-day="2" class="target-1"></ul>
+              </div>
+              <div class="day">
+                <h3>Day 3</h3>
+                <ul data-num-day="3" class="target-1"></ul>
+              </div>
+              <div class="day">
+                <h3>Day 4</h3>
+                <ul data-num-day="4" class="target-1"></ul>
+              </div>
+              <div class="day">
+                <h3>Day 5</h3>
+                <ul data-num-day="5" class="target-5"></ul>
+              </div>
             </div>
           </div>
         </div> -->

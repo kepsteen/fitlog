@@ -270,6 +270,38 @@ a {
   position: absolute;
 }
 
+.workout {
+  padding: 0 20px;
+}
+
+.workout-data-container {
+  gap: 20px;
+}
+
+.day,
+.exercises {
+  width: 150px;
+}
+
+.day > ul,
+.exercises > ul {
+  list-style: none;
+  min-height: 200px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+}
+
+.days-container {
+  gap: 20px;
+  max-width:;
+}
+
+.dragover {
+  border: 1px solid #ffd60a;
+  border-radius: 5px solid;
+}
+
 @media only screen and (width >= 600px) {
   h1,
   h2,
