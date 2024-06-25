@@ -150,7 +150,9 @@
           </p>
           <p class="details-property">Description:</p>
           <p id="details-description"></p>
-          <button class="blue-btn">Add to Workout</button>
+          <button type="button" class="add-exercise-btn blue-btn">
+            Add to Workout
+          </button>
         </div>
       </section>
       <section
@@ -195,6 +197,11 @@
           </button>
         </form>
       </section>
+      <dialog class="add-exercise-modal">
+        <i class="fa-solid fa-x" style="color: #001d3d"></i>
+        <h1>Add to Workout:</h1>
+        <form action="" class="flex flex-col" id="add-exercise-form"></form>
+      </dialog>
     </main>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>

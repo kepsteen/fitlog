@@ -2,11 +2,15 @@
 interface Data {
   favorites: Exercise[];
   workouts: Workout[];
+  nextWorkoutId: number;
+  viewing: null | Exercise;
 }
 
 let fitlogData: Data = {
   favorites: [],
   workouts: [],
+  nextWorkoutId: 1,
+  viewing: null,
 };
 
 window.addEventListener('beforeunload', () => {

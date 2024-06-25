@@ -2,6 +2,8 @@
 let fitlogData = {
   favorites: [],
   workouts: [],
+  nextWorkoutId: 1,
+  viewing: null,
 };
 window.addEventListener('beforeunload', () => {
   const dataJSON = JSON.stringify(fitlogData);

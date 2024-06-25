@@ -1,3 +1,7 @@
+main {
+  position: relative;
+}
+
 h1,
 h2,
 h3 {
@@ -95,8 +99,8 @@ a {
 }
 
 .search-bar {
-  height: 30px;
   width: 250px;
+  height: 30px;
 }
 
 .yellow-btn {
@@ -146,10 +150,12 @@ a {
 
 .card-text {
   max-width: calc(100% - 100px);
+  text-align: center;
 }
 
 .card-text > h3 {
   margin: 0 0 10px;
+  text-align: center;
 }
 
 .details-title {
@@ -228,6 +234,42 @@ a {
   gap: 6px;
 }
 
+.add-exercise-modal {
+  border-color: transparent;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  width: 210px;
+}
+
+.add-exercise-modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.add-exercise-modal > h1 {
+  color: #001d3d;
+  font-size: 1.2rem;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+#add-exercise-form {
+  margin-top: 10px;
+  gap: 6px;
+}
+
+.card-icons {
+  gap: 6px;
+}
+
+.overlay {
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+}
+
 @media only screen and (width >= 600px) {
   h1,
   h2,
@@ -262,7 +304,6 @@ a {
   }
 
   .details-title {
-    /* width: 100%; */
     text-align: center;
   }
 
