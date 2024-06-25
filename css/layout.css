@@ -26,6 +26,10 @@
   justify-content: flex-end;
 }
 
+.justify-baseline {
+  justify-content: baseline;
+}
+
 .align-center {
   align-items: center;
 }
