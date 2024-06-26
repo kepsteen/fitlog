@@ -740,6 +740,24 @@ function renderAddedExercise(workoutIdArr: number[], exercise: Exercise): void {
         const $ulElement = workoutNode.querySelector('.exercises > ul');
         if (!$ulElement) throw new Error('no ul element found');
         $ulElement.appendChild(li);
+        const newExerciseElement = workoutNode.querySelector(
+          `[data-base-id='${exercise.baseId}']`,
+        ) as HTMLElement;
+        if (newExerciseElement) {
+          newExerciseElement.addEventListener(
+            'dragstart',
+            (event: DragEvent) => {
+              console.log('dragging');
+              if (event.dataTransfer) {
+                event.dataTransfer.clearData();
+                event.dataTransfer.setData(
+                  'text/plain',
+                  newExerciseElement.dataset.baseId!,
+                );
+              }
+            },
+          );
+        }
       }
     }
   });
@@ -1035,6 +1053,7 @@ $addExerciseForm.addEventListener('submit', (event: Event): void => {
     }
   }
   renderAddedExercise(selectedWorkoutIds, currentExercise);
+
   // render the exercise list item
   // append it to the workout
   // Add exercises to exercises column in workout

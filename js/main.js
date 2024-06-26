@@ -589,7 +589,6 @@ function createDragNDropEventListeners(workoutId) {
 }
 // listen for click event on carat get the databaseWorkoutid
 function renderAddedExercise(workoutIdArr, exercise) {
-  debugger;
   const $workoutsNodeList = document.querySelectorAll('.workout');
   workoutIdArr.forEach((id) => {
     for (const workoutNode of $workoutsNodeList) {
@@ -608,6 +607,21 @@ function renderAddedExercise(workoutIdArr, exercise) {
         const $ulElement = workoutNode.querySelector('.exercises > ul');
         if (!$ulElement) throw new Error('no ul element found');
         $ulElement.appendChild(li);
+        const newExerciseElement = workoutNode.querySelector(
+          `[data-base-id='${exercise.baseId}']`,
+        );
+        if (newExerciseElement) {
+          newExerciseElement.addEventListener('dragstart', (event) => {
+            console.log('dragging');
+            if (event.dataTransfer) {
+              event.dataTransfer.clearData();
+              event.dataTransfer.setData(
+                'text/plain',
+                newExerciseElement.dataset.baseId,
+              );
+            }
+          });
+        }
       }
     }
   });
