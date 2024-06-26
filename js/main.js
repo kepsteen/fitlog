@@ -338,8 +338,6 @@ function renderWorkouts(workout) {
   workout.exercises.forEach((exercise) => {
     const $exerciseLi = document.createElement('li');
     $exerciseLi.setAttribute('data-base-id', `${exercise.baseId}`);
-    $exerciseLi.setAttribute('id', `${fitlogData.nextExerciseListItemId}`);
-    fitlogData.nextExerciseListItemId++;
     // make it draggable
     $exerciseLi.setAttribute('data-workout-id', `${workout.workoutId}`);
     $exerciseLi.setAttribute('draggable', 'true');
@@ -370,168 +368,180 @@ function renderWorkouts(workout) {
   return $workoutDiv;
 }
 // Example usage
-// const workout: Workout = {
-//   workoutId: 1,
-//   name: 'Workout render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'lunge',
-//       image: '',
-//       baseId: 2,
-//       id: 101,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-// const workout2: Workout = {
-//   workoutId: 2,
-//   name: 'Workout 2 render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'lunge',
-//       image: '',
-//       baseId: 2,
-//       id: 101,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-// const workout3: Workout = {
-//   workoutId: 3,
-//   name: 'Workout 3 render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'lunge',
-//       image: '',
-//       baseId: 2,
-//       id: 101,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'push up',
-//       image: '',
-//       baseId: 5,
-//       id: 105,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-// const workout4: Workout = {
-//   workoutId: 4,
-//   name: 'Workout 4 render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'bench',
-//       image: '',
-//       baseId: 3,
-//       id: 102,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'pull up',
-//       image: '',
-//       baseId: 4,
-//       id: 103,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
+const workout = {
+  workoutId: 1,
+  name: 'Workout render',
+  days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
+  exercises: [
+    {
+      name: 'squat',
+      image: '',
+      baseId: 1,
+      id: 100,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+    {
+      name: 'lunge',
+      image: '',
+      baseId: 2,
+      id: 101,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+  ],
+};
+const workout2 = {
+  workoutId: 2,
+  name: 'Workout 2 render',
+  days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
+  exercises: [
+    {
+      name: 'squat',
+      image: '',
+      baseId: 1,
+      id: 100,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+    {
+      name: 'lunge',
+      image: '',
+      baseId: 2,
+      id: 101,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+  ],
+};
+const workout3 = {
+  workoutId: 3,
+  name: 'Workout 3 render',
+  days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
+  exercises: [
+    {
+      name: 'squat',
+      image: '',
+      baseId: 1,
+      id: 100,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+    {
+      name: 'lunge',
+      image: '',
+      baseId: 2,
+      id: 101,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+    {
+      name: 'push up',
+      image: '',
+      baseId: 5,
+      id: 105,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+  ],
+};
+const workout4 = {
+  workoutId: 4,
+  name: 'Workout 4 render',
+  days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
+  exercises: [
+    {
+      name: 'bench',
+      image: '',
+      baseId: 3,
+      id: 102,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+    {
+      name: 'pull up',
+      image: '',
+      baseId: 4,
+      id: 103,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+    {
+      name: 'squat',
+      image: '',
+      baseId: 1,
+      id: 100,
+      description: 'squat description',
+      primaryMuscles: [],
+      secondaryMuscles: [],
+      equipment: [],
+      favorite: false,
+    },
+  ],
+};
 const $workoutsSection = document.querySelector('.workouts');
 if (!$workoutsSection) throw new Error('no workouts section');
-// $workoutsSection.appendChild(renderWorkouts(workout));
-// $workoutsSection.appendChild(renderWorkouts(workout2));
-// $workoutsSection.appendChild(renderWorkouts(workout3));
-// $workoutsSection.appendChild(renderWorkouts(workout4));
-// createDragNDropEventListeners(workout.workoutId);
-// createDragNDropEventListeners(workout2.workoutId);
-// createDragNDropEventListeners(workout3.workoutId);
-// createDragNDropEventListeners(workout4.workoutId);
-function handleCaretClick(workoutId) {
+const ExWorkoutArr = [workout, workout2, workout3, workout4];
+ExWorkoutArr.forEach((workout) => {
+  fitlogData.workouts.push(workout);
+});
+$workoutsSection.appendChild(renderWorkouts(workout));
+$workoutsSection.appendChild(renderWorkouts(workout2));
+$workoutsSection.appendChild(renderWorkouts(workout3));
+$workoutsSection.appendChild(renderWorkouts(workout4));
+createDragNDropEventListeners(workout.workoutId);
+createDragNDropEventListeners(workout2.workoutId);
+createDragNDropEventListeners(workout3.workoutId);
+createDragNDropEventListeners(workout4.workoutId);
+function handleCaretClick(workoutId, caretIcon) {
   // goal to hide the other workouts and reset the caret
   const $workoutNodeList = document.querySelectorAll('.workout-data-container');
   $workoutNodeList.forEach((workoutNode) => {
     if (!workoutNode.dataset.workoutId) return;
     if (parseInt(workoutNode.dataset.workoutId) === workoutId) {
-      workoutNode.classList.remove('hidden');
+      if (caretIcon.classList.contains('fa-caret-down')) {
+        caretIcon.classList.remove('fa-caret-down');
+        caretIcon.classList.add('fa-caret-right');
+        workoutNode.classList.add('hidden');
+      } else if (caretIcon.classList.contains('fa-caret-right')) {
+        caretIcon.classList.remove('fa-caret-right');
+        caretIcon.classList.add('fa-caret-down');
+        workoutNode.classList.remove('hidden');
+      }
     } else {
       workoutNode.classList.add('hidden');
     }
   });
 }
 function createDragNDropEventListeners(workoutId) {
-  //do something
+  // do something
   const $workout = document.querySelector(`[data-workout-id="${workoutId}"]`);
   if (!$workout) throw new Error('no workout container found');
   const $exercisesNodeList = $workout.querySelectorAll(
@@ -578,14 +588,38 @@ function createDragNDropEventListeners(workoutId) {
   });
 }
 // listen for click event on carat get the databaseWorkoutid
+function renderAddedExercise(workoutIdArr, exercise) {
+  debugger;
+  const $workoutsNodeList = document.querySelectorAll('.workout');
+  workoutIdArr.forEach((id) => {
+    for (const workoutNode of $workoutsNodeList) {
+      if (
+        workoutNode.dataset.workoutId &&
+        id === parseInt(workoutNode.dataset.workoutId)
+      ) {
+        console.log('ids match');
+        console.log(exercise);
+        const li = document.createElement('li');
+        li.setAttribute('data-base-id', `${exercise.baseId}`);
+        li.setAttribute('data-workout-id', `${workoutNode.dataset.workoutId}`);
+        li.setAttribute('draggable', 'true');
+        li.textContent = exercise.name;
+        console.log('li', li);
+        const $ulElement = workoutNode.querySelector('.exercises > ul');
+        if (!$ulElement) throw new Error('no ul element found');
+        $ulElement.appendChild(li);
+      }
+    }
+  });
+}
 $workoutsSection.addEventListener('click', (event) => {
   const $eventTarget = event.target;
   console.log($eventTarget);
   if ($eventTarget.tagName === 'I') {
     const $workoutContainer = $eventTarget.closest('.workout');
     const workoutId = $workoutContainer.dataset.workoutId;
-    console.log(workoutId);
-    if (workoutId) handleCaretClick(parseInt(workoutId));
+    console.log('workout id', workoutId);
+    if (workoutId) handleCaretClick(parseInt(workoutId), $eventTarget);
   }
   //   // Need to show the days container only if carat icon is clicked
   //   const $workoutDataContainer = $workoutContainer.querySelector(
@@ -842,5 +876,8 @@ $addExerciseForm.addEventListener('submit', (event) => {
       $addExerciseForm.removeChild($addExerciseForm.firstChild);
     }
   }
+  renderAddedExercise(selectedWorkoutIds, currentExercise);
+  // render the exercise list item
+  // append it to the workout
+  // Add exercises to exercises column in workout
 });
-fitlogData.workouts = [];

@@ -4,7 +4,6 @@ interface Data {
   workouts: Workout[];
   nextWorkoutId: number;
   viewing: null | Exercise;
-  nextExerciseListItemId: number;
 }
 
 let fitlogData: Data = {
@@ -12,7 +11,6 @@ let fitlogData: Data = {
   workouts: [],
   nextWorkoutId: 1,
   viewing: null,
-  nextExerciseListItemId: 1,
 };
 
 window.addEventListener('beforeunload', () => {
