@@ -50,6 +50,10 @@ a {
   font-family: 'Archivo Black', serif;
 }
 
+section {
+  margin-bottom: 30px;
+}
+
 .navbar {
   background-color: #001d3d;
 }
@@ -60,6 +64,7 @@ a {
   border: 1px solid rgb(22, 94, 167);
   background-color: #003566;
   margin: auto 10px auto 0;
+  cursor: pointer;
 }
 
 .fitlog {
@@ -270,6 +275,54 @@ a {
   position: absolute;
 }
 
+.workout {
+  padding: 0 20px;
+}
+
+.workout-data-container {
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.workout-title {
+  padding-left: 50px;
+}
+
+.workout-title > h1,
+.workout-title i {
+  color: #ffc300;
+}
+
+.day,
+.exercises {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.day > ul,
+.exercises > ul {
+  list-style: none;
+  min-height: 100px;
+  margin: 0;
+  padding: 0;
+}
+
+.day li,
+.exercises li {
+  font-family: Archivo, serif;
+  padding-bottom: 6px;
+}
+
+.day li:last-child {
+  padding-bottom: 20px;
+}
+
+.days-container {
+  gap: 20px;
+  max-width: 300px;
+}
+
 @media only screen and (width >= 600px) {
   h1,
   h2,
@@ -315,6 +368,10 @@ a {
     margin-right: 20px;
     margin-left: 20px;
   }
+
+  .workout-data-container {
+    flex-wrap: nowrap;
+  }
 }
 
 @media only screen and (width >= 800px) {
@@ -329,6 +386,14 @@ a {
     width: calc(50% - 40px);
     max-width: 400px;
     max-height: 400px;
+  }
+
+  .days-container {
+    max-width: calc(100% - 400px);
+  }
+
+  .day {
+    margin: 0 auto;
   }
 }
 
@@ -345,5 +410,9 @@ a {
   .details-text {
     max-width: 400px;
     max-height: 400px;
+  }
+
+  .day {
+    margin: 0 auto;
   }
 }

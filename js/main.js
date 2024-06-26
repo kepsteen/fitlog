@@ -22,6 +22,7 @@ const $newWorkoutForm = document.querySelector('.new-workout-form');
 const $addExerciseBtn = document.querySelector('.add-exercise-btn');
 const $addExerciseModal = document.querySelector('.add-exercise-modal');
 const $addExerciseForm = document.querySelector('#add-exercise-form');
+const $workoutsSection = document.querySelector('.workouts');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -42,6 +43,7 @@ if (!$newWorkoutForm) throw new Error('no new workout form');
 if (!$addExerciseBtn) throw new Error('no add exercise btn found');
 if (!$addExerciseModal) throw new Error('no add exercise modal found');
 if (!$addExerciseForm) throw new Error('no add exercise form found');
+if (!$workoutsSection) throw new Error('no workouts section');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -189,6 +191,13 @@ function findExerciseByBaseId(baseId) {
       return exercise;
     }
   }
+  for (const workout of fitlogData.workouts) {
+    for (const exercise of workout.exercises) {
+      if (exercise.baseId === baseId) {
+        return exercise;
+      }
+    }
+  }
   return null;
 }
 function handleFavoriteClick(exerciseObj, targetIcon) {
@@ -299,12 +308,233 @@ function renderAddExerciseForm() {
   $div.appendChild($submitBtn);
   $addExerciseForm.appendChild($div);
 }
+function renderWorkouts(workout) {
+  const $workoutDiv = document.createElement('div');
+  $workoutDiv.setAttribute('class', 'workout');
+  $workoutDiv.setAttribute('data-workout-id', `${workout.workoutId}`);
+  const $workoutTitleDiv = document.createElement('div');
+  $workoutTitleDiv.setAttribute('class', 'workout-title flex');
+  $workoutTitleDiv.setAttribute('style', 'gap: 10px');
+  const $workoutTitleH1 = document.createElement('h1');
+  $workoutTitleH1.textContent = workout.name;
+  const $iconContainerDiv = document.createElement('div');
+  $iconContainerDiv.setAttribute('class', 'caret-container flex align-center');
+  const $icon = document.createElement('i');
+  $icon.setAttribute('class', 'fa-solid fa-caret-right');
+  $icon.setAttribute('data-workout-id', `${workout.workoutId}`);
+  $iconContainerDiv.appendChild($icon);
+  $workoutTitleDiv.appendChild($workoutTitleH1);
+  $workoutTitleDiv.appendChild($iconContainerDiv);
+  const $workoutDataContainer = document.createElement('div');
+  $workoutDataContainer.setAttribute(
+    'class',
+    'workout-data-container flex hidden',
+  );
+  $workoutDataContainer.setAttribute('style', 'gap: 20px');
+  $workoutDataContainer.setAttribute('data-workout-id', `${workout.workoutId}`);
+  const $exercisesDiv = document.createElement('div');
+  $exercisesDiv.setAttribute('class', 'exercises');
+  if (workout.exercises.length === 0) $exercisesDiv.classList.add('hidden');
+  const $exercisesH3 = document.createElement('h3');
+  $exercisesH3.textContent = 'Exercises';
+  const $exercisesUl = document.createElement('ul');
+  workout.exercises.forEach((exercise) => {
+    const $exerciseLi = document.createElement('li');
+    $exerciseLi.setAttribute('data-base-id', `${exercise.baseId}`);
+    $exerciseLi.setAttribute('data-workout-id', `${workout.workoutId}`);
+    $exerciseLi.setAttribute('draggable', 'true');
+    const $strong = document.createElement('strong');
+    $strong.textContent = exercise.name + ':';
+    $exerciseLi.appendChild($strong);
+    const textNode = document.createTextNode(' 3 x 10-12 reps');
+    $exerciseLi.appendChild(textNode);
+    $exercisesUl.appendChild($exerciseLi);
+  });
+  $exercisesDiv.appendChild($exercisesH3);
+  $exercisesDiv.appendChild($exercisesUl);
+  $workoutDataContainer.appendChild($exercisesDiv);
+  const $daysContainerDiv = document.createElement('div');
+  $daysContainerDiv.setAttribute('class', 'days-container flex wrap');
+  for (let i = 0; i < workout.days.length; i++) {
+    const numDay = i + 1;
+    const $dayDiv = document.createElement('div');
+    $dayDiv.setAttribute('class', 'day');
+    const $dayH3 = document.createElement('h3');
+    $dayH3.textContent = `Day ${numDay}`;
+    const $dayUl = document.createElement('ul');
+    $dayUl.setAttribute('data-num-day', `${numDay}`);
+    $dayUl.setAttribute('class', `target-${workout.workoutId}`);
+    workout.days[i][numDay].forEach((exercise) => {
+      const $exerciseLi = document.createElement('li');
+      $exerciseLi.setAttribute('data-base-id', `${exercise.baseId}`);
+      $exerciseLi.setAttribute('data-workout-id', `${workout.workoutId}`);
+      const $strong = document.createElement('strong');
+      $strong.textContent = exercise.name + ':';
+      $exerciseLi.appendChild($strong);
+      const textNode = document.createTextNode(' 3 x 10-12 reps');
+      $exerciseLi.appendChild(textNode);
+      $dayUl.appendChild($exerciseLi);
+    });
+    $dayDiv.appendChild($dayH3);
+    $dayDiv.appendChild($dayUl);
+    $daysContainerDiv.appendChild($dayDiv);
+  }
+  $workoutDataContainer.appendChild($daysContainerDiv);
+  $workoutDiv.appendChild($workoutTitleDiv);
+  $workoutDiv.appendChild($workoutDataContainer);
+  return $workoutDiv;
+}
+function handleCaretClick(workoutId, caretIcon) {
+  const $workoutNodeList = document.querySelectorAll('.workout-data-container');
+  $workoutNodeList.forEach((workoutNode) => {
+    if (!workoutNode.dataset.workoutId) return;
+    if (parseInt(workoutNode.dataset.workoutId) === workoutId) {
+      if (caretIcon.classList.contains('fa-caret-down')) {
+        caretIcon.classList.remove('fa-caret-down');
+        caretIcon.classList.add('fa-caret-right');
+        workoutNode.classList.add('hidden');
+      } else if (caretIcon.classList.contains('fa-caret-right')) {
+        caretIcon.classList.remove('fa-caret-right');
+        caretIcon.classList.add('fa-caret-down');
+        workoutNode.classList.remove('hidden');
+      }
+    } else if (parseInt(workoutNode.dataset.workoutId) !== workoutId) {
+      const caretNodeList = document.querySelectorAll('.fa-caret-down');
+      caretNodeList.forEach((caret) => {
+        if (!caret.dataset.workoutId) return;
+        if (parseInt(caret.dataset.workoutId) !== workoutId) {
+          caret.classList.remove('fa-caret-down');
+          caret.classList.add('fa-caret-right');
+        }
+      });
+      workoutNode.classList.add('hidden');
+    }
+  });
+}
+function createDragNDropEventListeners(workoutId) {
+  const $workout = document.querySelector(`[data-workout-id="${workoutId}"]`);
+  if (!$workout) throw new Error('no workout container found');
+  const $exercisesNodeList = $workout.querySelectorAll(
+    `li[data-workout-id="${workoutId}"]`,
+  );
+  if (!$exercisesNodeList) throw new Error('no exercises container list found');
+  $exercisesNodeList.forEach((element) => {
+    element.addEventListener('dragstart', (event) => {
+      if (event.dataTransfer) {
+        event.dataTransfer.clearData();
+        event.dataTransfer.setData('text/plain', element.dataset.baseId);
+      }
+    });
+  });
+  const $targetsNodeList = $workout.querySelectorAll(`.target-${workoutId}`);
+  if (!$targetsNodeList) throw new Error('no targets node list found');
+  $targetsNodeList.forEach((element) => {
+    element.addEventListener('dragover', (event1) => {
+      event1.preventDefault();
+    });
+    element.addEventListener('drop', (event2) => {
+      event2.preventDefault();
+      if (event2.dataTransfer) {
+        const data = event2.dataTransfer.getData('text');
+        const source = $workout.querySelector(`[data-base-id="${data}"]`);
+        if (source) {
+          source.setAttribute('draggable', 'false');
+          element?.appendChild(source);
+        }
+        const $eventTarget = event2.target;
+        const targetNumDay = $eventTarget.closest('ul')?.dataset.numDay;
+        if (!targetNumDay) return;
+        assignExercisesToDays(
+          parseInt(data),
+          parseInt(targetNumDay),
+          workoutId,
+        );
+        event2.dataTransfer.clearData();
+      }
+    });
+  });
+}
+function renderAddedExercise(workoutIdArr, exercise) {
+  const $workoutsNodeList = document.querySelectorAll('.workout');
+  workoutIdArr.forEach((id) => {
+    for (const workoutNode of $workoutsNodeList) {
+      if (
+        workoutNode.dataset.workoutId &&
+        id === parseInt(workoutNode.dataset.workoutId)
+      ) {
+        const li = document.createElement('li');
+        li.setAttribute('data-base-id', `${exercise.baseId}`);
+        li.setAttribute('data-workout-id', `${workoutNode.dataset.workoutId}`);
+        li.setAttribute('draggable', 'true');
+        const $strong = document.createElement('strong');
+        $strong.textContent = exercise.name + ':';
+        li.appendChild($strong);
+        const textNode = document.createTextNode(' 3 x 10-12 reps');
+        li.appendChild(textNode);
+        const $exercisesDiv = workoutNode.querySelector('.exercises');
+        if (!$exercisesDiv) throw new Error('no exercises div found');
+        $exercisesDiv.classList.remove('hidden');
+        const $ulElement = workoutNode.querySelector('.exercises > ul');
+        if (!$ulElement) throw new Error('no ul element found');
+        $ulElement.appendChild(li);
+        const newExerciseElement = workoutNode.querySelector(
+          `[data-base-id='${exercise.baseId}']`,
+        );
+        if (newExerciseElement) {
+          newExerciseElement.addEventListener('dragstart', (event) => {
+            if (event.dataTransfer) {
+              event.dataTransfer.clearData();
+              event.dataTransfer.setData(
+                'text/plain',
+                newExerciseElement.dataset.baseId,
+              );
+            }
+          });
+        }
+      }
+    }
+  });
+}
+function assignExercisesToDays(baseId, numDay, workoutId) {
+  // const matchingWorkout = fitlogData.workouts.filter(
+  //   (workout) => workout.workoutId === workoutId,
+  // );
+  for (const workout of fitlogData.workouts) {
+    if (workout.workoutId === workoutId) {
+      let indexToRemove = null;
+      for (let i = 0; i < workout.exercises.length; i++) {
+        if (workout.exercises[i].baseId === baseId) {
+          indexToRemove = i;
+          break;
+        }
+      }
+      if (indexToRemove !== null) {
+        const exerciseRemoved = workout.exercises.splice(indexToRemove, 1);
+        const foundDay = workout.days.find((day) => day[numDay] !== undefined);
+        if (!foundDay) return;
+        foundDay[numDay].push(exerciseRemoved[0]);
+      }
+    }
+  }
+}
 document.addEventListener('DOMContentLoaded', () => {
   fitlogData.favorites.forEach((exercise) => {
     $favoritesCardList.appendChild(renderExercises(exercise));
   });
   if (fitlogData.favorites.length === 0)
     $favoritesCta.classList.remove('hidden');
+  fitlogData.workouts.forEach((workout) => {
+    $workoutsSection.appendChild(renderWorkouts(workout));
+    createDragNDropEventListeners(workout.workoutId);
+  });
+});
+$workoutsSection.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if ($eventTarget.tagName === 'I') {
+    const $workoutContainer = $eventTarget.closest('.workout');
+    const workoutId = $workoutContainer.dataset.workoutId;
+    if (workoutId) handleCaretClick(parseInt(workoutId), $eventTarget);
+  }
 });
 $beginBtn.addEventListener('click', () => {
   viewSwap('exercises-view');
@@ -319,7 +549,10 @@ $searchForm.addEventListener('submit', (event) => {
 });
 $header.addEventListener('click', (event) => {
   const $eventTarget = event.target;
-  if ($eventTarget.classList.contains('hamburger')) {
+  if (
+    $eventTarget.classList.contains('menu') ||
+    $eventTarget.classList.contains('hamburger')
+  ) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
   } else if ($eventTarget.classList.contains('fa-x')) {
@@ -345,6 +578,12 @@ $header.addEventListener('click', (event) => {
     }
   } else if ($eventTarget.classList.contains('home-view-anchor')) {
     viewSwap('home');
+  } else if ($eventTarget.classList.contains('workouts-view-anchor')) {
+    viewSwap('workouts-view');
+    if ($eventTarget.classList.contains('hamburger-link')) {
+      $hamburger?.classList.toggle('hidden');
+      $hamburgerLinks?.classList.toggle('hidden');
+    }
   }
 });
 $exercisesCardList.addEventListener('click', (event) => {
@@ -422,9 +661,16 @@ $favoritesCta.addEventListener('click', () => {
 $newWorkoutForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const $formElements = $newWorkoutForm.elements;
+  const numDays = parseInt($formElements.days.value);
+  const dayObjArr = [];
+  for (let i = 1; i <= numDays; i++) {
+    const dayObject = {};
+    dayObject[i] = [];
+    dayObjArr.push(dayObject);
+  }
   const newWorkout = {
     name: $formElements.name.value,
-    days: parseInt($formElements.days.value),
+    days: dayObjArr,
     exercises: [],
     workoutId: fitlogData.nextWorkoutId,
   };
@@ -432,6 +678,8 @@ $newWorkoutForm.addEventListener('submit', (event) => {
   fitlogData.workouts.push(newWorkout);
   $newWorkoutForm.reset();
   viewSwap('exercises-view');
+  $workoutsSection.appendChild(renderWorkouts(newWorkout));
+  createDragNDropEventListeners(newWorkout.workoutId);
 });
 $addExerciseModal.addEventListener('click', (event) => {
   const $eventTarget = event.target;
@@ -468,5 +716,5 @@ $addExerciseForm.addEventListener('submit', (event) => {
       $addExerciseForm.removeChild($addExerciseForm.firstChild);
     }
   }
+  renderAddedExercise(selectedWorkoutIds, currentExercise);
 });
-fitlogData.workouts = [];

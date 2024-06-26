@@ -47,6 +47,11 @@
               >
             </li>
             <li>
+              <a href="#" data-view="workouts-view" class="workouts-view-anchor"
+                >Workouts</a
+              >
+            </li>
+            <li>
               <a
                 href="#"
                 data-view="new-workout"
@@ -72,6 +77,10 @@
           <a href="#" class="favorites-view-anchor hamburger-link"
             >Favorites <i class="fa-solid fa-heart" style="color: #ffffff"></i
           ></a>
+          <a href="#" class="workouts-view-anchor hamburger-link"
+            >Workouts
+            <i class="fa-solid fa-book-open" style="color: #ffffff"></i>
+          </a>
           <a href="#" class="new-workout-view-anchor hamburger-link"
             >Create Workout
             <i class="fa-solid fa-pen-to-square" style="color: #ffffff"></i>
@@ -80,7 +89,7 @@
       </div>
     </header>
     <main>
-      <section class="home flex flex-col align-center" data-view="home">
+      <section class="home flex flex-col align-center hidden" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="big-btn yellow-btn" id="begin">
           Begin
@@ -197,6 +206,9 @@
           </button>
         </form>
       </section>
+      <section
+        class="workouts flex flex-col"
+        data-view="workouts-view"></section>
       <dialog class="add-exercise-modal">
         <i class="fa-solid fa-x" style="color: #001d3d"></i>
         <h1>Add to Workout:</h1>
