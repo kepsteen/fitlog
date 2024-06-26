@@ -21,8 +21,6 @@ interface Exercise {
   favorite: boolean;
 }
 
-// turn days into string of day objects
-
 interface Day {
   [num: number]: Exercise[];
 }
@@ -91,6 +89,7 @@ const $addExerciseModal = document.querySelector(
 const $addExerciseForm = document.querySelector(
   '#add-exercise-form',
 ) as HTMLFormElement;
+const $workoutsSection = document.querySelector('.workouts') as HTMLElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -112,6 +111,7 @@ if (!$newWorkoutForm) throw new Error('no new workout form');
 if (!$addExerciseBtn) throw new Error('no add exercise btn found');
 if (!$addExerciseModal) throw new Error('no add exercise modal found');
 if (!$addExerciseForm) throw new Error('no add exercise form found');
+if (!$workoutsSection) throw new Error('no workouts section');
 
 function renderExercises(exerciseObj: Exercise): HTMLDivElement {
   const $card = document.createElement('div');
@@ -401,7 +401,6 @@ function renderAddExerciseForm(): void {
   $addExerciseForm.appendChild($div);
 }
 
-// function to render the workouts
 function renderWorkouts(workout: Workout): HTMLDivElement {
   const $workoutDiv = document.createElement('div');
   $workoutDiv.setAttribute('class', 'workout');
@@ -434,7 +433,6 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
   $workoutDataContainer.setAttribute('data-workout-id', `${workout.workoutId}`);
 
   const $exercisesDiv = document.createElement('div');
-  console.log('workout', workout);
   $exercisesDiv.setAttribute('class', 'exercises');
   if (workout.exercises.length === 0) $exercisesDiv.classList.add('hidden');
 
@@ -445,7 +443,7 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
   workout.exercises.forEach((exercise: Exercise) => {
     const $exerciseLi = document.createElement('li');
     $exerciseLi.setAttribute('data-base-id', `${exercise.baseId}`);
-    // make it draggable
+
     $exerciseLi.setAttribute('data-workout-id', `${workout.workoutId}`);
     $exerciseLi.setAttribute('draggable', 'true');
     const $strong = document.createElement('strong');
@@ -498,168 +496,7 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
   return $workoutDiv;
 }
 
-// Example usage
-// const workout: Workout = {
-//   workoutId: 1,
-//   name: 'Workout render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'lunge',
-//       image: '',
-//       baseId: 2,
-//       id: 101,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-// const workout2: Workout = {
-//   workoutId: 2,
-//   name: 'Workout 2 render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'lunge',
-//       image: '',
-//       baseId: 2,
-//       id: 101,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-// const workout3: Workout = {
-//   workoutId: 3,
-//   name: 'Workout 3 render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'lunge',
-//       image: '',
-//       baseId: 2,
-//       id: 101,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'push up',
-//       image: '',
-//       baseId: 5,
-//       id: 105,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-// const workout4: Workout = {
-//   workoutId: 4,
-//   name: 'Workout 4 render',
-//   days: [{ 1: [] }, { 2: [] }, { 3: [] }, { 4: [] }, { 5: [] }],
-//   exercises: [
-//     {
-//       name: 'bench',
-//       image: '',
-//       baseId: 3,
-//       id: 102,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'pull up',
-//       image: '',
-//       baseId: 4,
-//       id: 103,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//     {
-//       name: 'squat',
-//       image: '',
-//       baseId: 1,
-//       id: 100,
-//       description: 'squat description',
-//       primaryMuscles: [],
-//       secondaryMuscles: [],
-//       equipment: [],
-//       favorite: false,
-//     },
-//   ],
-// };
-
-const $workoutsSection = document.querySelector('.workouts') as HTMLElement;
-if (!$workoutsSection) throw new Error('no workouts section');
-
-// const ExWorkoutArr = [workout, workout2, workout3, workout4];
-
-// if (fitlogData.workouts.length === 0) {
-//   ExWorkoutArr.forEach((workout) => {
-//     fitlogData.workouts.push(workout);
-//   });
-// }
-// $workoutsSection.appendChild(renderWorkouts(workout));
-// $workoutsSection.appendChild(renderWorkouts(workout2));
-// $workoutsSection.appendChild(renderWorkouts(workout3));
-// $workoutsSection.appendChild(renderWorkouts(workout4));
-
-// createDragNDropEventListeners(workout.workoutId);
-// createDragNDropEventListeners(workout2.workoutId);
-// createDragNDropEventListeners(workout3.workoutId);
-// createDragNDropEventListeners(workout4.workoutId);
-
 function handleCaretClick(workoutId: number, caretIcon: HTMLElement): void {
-  // goal to hide the other workouts and reset the caret
   const $workoutNodeList = document.querySelectorAll(
     '.workout-data-container',
   ) as NodeListOf<HTMLElement>;
@@ -692,7 +529,6 @@ function handleCaretClick(workoutId: number, caretIcon: HTMLElement): void {
 }
 
 function createDragNDropEventListeners(workoutId: number): void {
-  // do something
   const $workout = document.querySelector(`[data-workout-id="${workoutId}"]`);
   if (!$workout) throw new Error('no workout container found');
 
@@ -700,10 +536,9 @@ function createDragNDropEventListeners(workoutId: number): void {
     `li[data-workout-id="${workoutId}"]`,
   ) as NodeListOf<HTMLElement>;
   if (!$exercisesNodeList) throw new Error('no exercises container list found');
-  console.log('exercises node list', $exercisesNodeList);
+
   $exercisesNodeList.forEach((element) => {
     element.addEventListener('dragstart', (event: DragEvent) => {
-      console.log('dragging');
       if (event.dataTransfer) {
         event.dataTransfer.clearData();
         event.dataTransfer.setData('text/plain', element.dataset.baseId!);
@@ -717,9 +552,6 @@ function createDragNDropEventListeners(workoutId: number): void {
   if (!$targetsNodeList) throw new Error('no targets node list found');
 
   $targetsNodeList.forEach((element) => {
-    element.addEventListener('click', () => {
-      console.log('target clicked');
-    });
     element.addEventListener('dragover', (event1: DragEvent) => {
       event1.preventDefault();
     });
@@ -733,7 +565,6 @@ function createDragNDropEventListeners(workoutId: number): void {
           source.setAttribute('draggable', 'false');
           element?.appendChild(source);
         }
-        console.log('target', event2.target);
         const $eventTarget = event2.target as HTMLElement;
         const targetNumDay = $eventTarget.closest('ul')?.dataset.numDay;
         if (!targetNumDay) return;
@@ -747,7 +578,6 @@ function createDragNDropEventListeners(workoutId: number): void {
     });
   });
 }
-// listen for click event on carat get the databaseWorkoutid
 
 function renderAddedExercise(workoutIdArr: number[], exercise: Exercise): void {
   const $workoutsNodeList = document.querySelectorAll(
@@ -759,17 +589,15 @@ function renderAddedExercise(workoutIdArr: number[], exercise: Exercise): void {
         workoutNode.dataset.workoutId &&
         id === parseInt(workoutNode.dataset.workoutId)
       ) {
-        console.log('ids match');
-        console.log(exercise);
         const li = document.createElement('li');
         li.setAttribute('data-base-id', `${exercise.baseId}`);
         li.setAttribute('data-workout-id', `${workoutNode.dataset.workoutId}`);
         li.setAttribute('draggable', 'true');
         const $strong = document.createElement('strong');
-        $strong.textContent = exercise.name;
+        $strong.textContent = exercise.name + ':';
         li.appendChild($strong);
-        // li.textContent = exercise.name;
-        console.log('li', li);
+        const textNode = document.createTextNode(' 3 x 10-12 reps');
+        li.appendChild(textNode);
 
         const $exercisesDiv = workoutNode.querySelector('.exercises');
         if (!$exercisesDiv) throw new Error('no exercises div found');
@@ -786,7 +614,6 @@ function renderAddedExercise(workoutIdArr: number[], exercise: Exercise): void {
           newExerciseElement.addEventListener(
             'dragstart',
             (event: DragEvent) => {
-              console.log('dragging');
               if (event.dataTransfer) {
                 event.dataTransfer.clearData();
                 event.dataTransfer.setData(
@@ -807,13 +634,6 @@ function assignExercisesToDays(
   numDay: number,
   workoutId: number,
 ): void {
-  // search the workouts for the matching workoutId
-  // Search the workout for the day object with the corresponding numDay
-  // push the exercise to the day array
-  console.log('base id: ', baseId, 'numDay', numDay, 'workoutId', workoutId);
-  const matchingWorkout = fitlogData.workouts.filter(
-    (workout) => workout.workoutId === workoutId,
-  );
   for (const workout of fitlogData.workouts) {
     if (workout.workoutId === workoutId) {
       let indexToRemove = null;
@@ -831,22 +651,7 @@ function assignExercisesToDays(
       }
     }
   }
-  console.log(matchingWorkout);
-  console.log(fitlogData.workouts);
 }
-
-$workoutsSection.addEventListener('click', (event: Event) => {
-  const $eventTarget = event.target as HTMLElement;
-  console.log($eventTarget);
-  if ($eventTarget.tagName === 'I') {
-    const $workoutContainer = $eventTarget.closest(
-      '.workout',
-    ) as HTMLDivElement;
-    const workoutId = $workoutContainer.dataset.workoutId;
-    console.log('workout id', workoutId);
-    if (workoutId) handleCaretClick(parseInt(workoutId), $eventTarget);
-  }
-});
 
 document.addEventListener('DOMContentLoaded', () => {
   fitlogData.favorites.forEach((exercise: Exercise) => {
@@ -858,6 +663,17 @@ document.addEventListener('DOMContentLoaded', () => {
     $workoutsSection.appendChild(renderWorkouts(workout));
     createDragNDropEventListeners(workout.workoutId);
   });
+});
+
+$workoutsSection.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  if ($eventTarget.tagName === 'I') {
+    const $workoutContainer = $eventTarget.closest(
+      '.workout',
+    ) as HTMLDivElement;
+    const workoutId = $workoutContainer.dataset.workoutId;
+    if (workoutId) handleCaretClick(parseInt(workoutId), $eventTarget);
+  }
 });
 
 $beginBtn.addEventListener('click', () => {
@@ -878,7 +694,10 @@ $searchForm.addEventListener('submit', (event: Event) => {
 
 $header.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLDivElement;
-  if ($eventTarget.classList.contains('hamburger')) {
+  if (
+    $eventTarget.classList.contains('menu') ||
+    $eventTarget.classList.contains('hamburger')
+  ) {
     $hamburger?.classList.toggle('hidden');
     $hamburgerLinks?.classList.toggle('hidden');
   } else if ($eventTarget.classList.contains('fa-x')) {
@@ -994,7 +813,7 @@ $favoritesCta.addEventListener('click', () => {
 $newWorkoutForm.addEventListener('submit', (event: Event) => {
   event.preventDefault();
   const $formElements = $newWorkoutForm.elements as NewWorkoutFormElements;
-  // change days to array of day objects
+
   const numDays = parseInt($formElements.days.value);
   const dayObjArr = [];
   for (let i = 1; i <= numDays; i++) {
@@ -1009,14 +828,12 @@ $newWorkoutForm.addEventListener('submit', (event: Event) => {
     exercises: [],
     workoutId: fitlogData.nextWorkoutId,
   };
-  console.log(newWorkout);
   fitlogData.nextWorkoutId++;
   fitlogData.workouts.push(newWorkout);
   $newWorkoutForm.reset();
   viewSwap('exercises-view');
   $workoutsSection.appendChild(renderWorkouts(newWorkout));
   createDragNDropEventListeners(newWorkout.workoutId);
-  // Render the workout on the workouts-view
 });
 
 $addExerciseModal.addEventListener('click', (event: Event) => {
@@ -1057,8 +874,4 @@ $addExerciseForm.addEventListener('submit', (event: Event): void => {
     }
   }
   renderAddedExercise(selectedWorkoutIds, currentExercise);
-
-  // render the exercise list item
-  // append it to the workout
-  // Add exercises to exercises column in workout
 });
