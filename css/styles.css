@@ -276,30 +276,35 @@ a {
 
 .workout-data-container {
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .day,
 .exercises {
-  width: 150px;
+  width: 300px;
+  margin: 0 auto;
 }
 
 .day > ul,
 .exercises > ul {
   list-style: none;
-  min-height: 200px;
+  min-height: 100px;
   margin: 0;
   padding: 0;
-  border: 1px solid black;
+}
+
+.day li,
+.exercises li {
+  font-family: Archivo, serif;
+  padding-bottom: 6px;
+}
+
+.day li:last-child {
+  padding-bottom: 20px;
 }
 
 .days-container {
   gap: 20px;
-  max-width:;
-}
-
-.dragover {
-  border: 1px solid #ffd60a;
-  border-radius: 5px solid;
 }
 
 @media only screen and (width >= 600px) {
@@ -346,6 +351,10 @@ a {
     max-height: 400px;
     margin-right: 20px;
     margin-left: 20px;
+  }
+
+  .workout-data-container {
+    flex-wrap: nowrap;
   }
 }
 
