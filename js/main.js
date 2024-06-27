@@ -23,6 +23,7 @@ const $addExerciseBtn = document.querySelector('.add-exercise-btn');
 const $addExerciseModal = document.querySelector('.add-exercise-modal');
 const $addExerciseForm = document.querySelector('#add-exercise-form');
 const $workoutsSection = document.querySelector('.workouts');
+const $navAnchorNodeList = document.querySelectorAll('.nav-links a');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -44,6 +45,7 @@ if (!$addExerciseBtn) throw new Error('no add exercise btn found');
 if (!$addExerciseModal) throw new Error('no add exercise modal found');
 if (!$addExerciseForm) throw new Error('no add exercise form found');
 if (!$workoutsSection) throw new Error('no workouts section');
+if (!$navAnchorNodeList) throw new Error('no nav-links anchor node list found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -134,6 +136,12 @@ async function fetchExerciseDetails(baseId, id, img) {
   return exerciseObj;
 }
 async function fetchExerciseSearchData(term) {
+  $noResults?.classList.add('hidden');
+  let loadingImg = document.querySelector('#loading-img');
+  loadingImg?.classList.add('hidden');
+  if (term === 'bench press')
+    loadingImg = document.querySelector('.penguin-press-img');
+  if (loadingImg) loadingImg.classList.remove('hidden');
   try {
     const response = await fetch(
       `https://wger.de/api/v2/exercise/search/?language=2&term=${term}`,
@@ -163,6 +171,8 @@ async function fetchExerciseSearchData(term) {
     }
   } catch (error) {
     console.error(error);
+  } finally {
+    if (loadingImg) loadingImg.classList.add('hidden');
   }
 }
 function viewSwap(view) {
@@ -171,6 +181,15 @@ function viewSwap(view) {
       $views[i].classList.remove('hidden');
     } else {
       $views[i].classList.add('hidden');
+    }
+  }
+  if ($navAnchorNodeList) {
+    for (let i = 0; i < $navAnchorNodeList.length; i++) {
+      if ($navAnchorNodeList[i].dataset.view === view) {
+        $navAnchorNodeList[i].classList.add('active-link');
+      } else {
+        $navAnchorNodeList[i].classList.remove('active-link');
+      }
     }
   }
 }
@@ -239,13 +258,14 @@ function handleFavoriteClick(exerciseObj, targetIcon) {
   for (let i = 0; i < $exercisesNodeList.length; i++) {
     const nodeBaseId = $exercisesNodeList[i].dataset.baseId;
     if (parseInt(nodeBaseId) === exerciseObj.baseId) {
-      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      const $heartIcon = $exercisesNodeList[i].querySelector('.fa-heart');
+      if (!$heartIcon) throw new Error('no heart icon found');
       if (exerciseObj.favorite) {
-        $heartIcon?.classList.remove('fa-regular');
-        $heartIcon?.classList.add('fa-solid');
+        $heartIcon.classList.remove('fa-regular');
+        $heartIcon.classList.add('fa-solid');
       } else {
-        $heartIcon?.classList.add('fa-regular');
-        $heartIcon?.classList.remove('fa-solid');
+        $heartIcon.classList.add('fa-regular');
+        $heartIcon.classList.remove('fa-solid');
       }
     }
   }
@@ -805,3 +825,11 @@ $addExerciseForm.addEventListener('submit', (event) => {
   }
   renderAddedExercise(selectedWorkoutIds, currentExercise);
 });
+// Change renderExercises to take simpler exerciseObj as parameter because to render the cards you only need the baseId, image and name
+// fetch the additional exercise details only (hit the baseId endpoint) after an exercise is clicked
+// Make sure to validate any queries and query globally if an element is going to be queried multiple times
+// For the loadingImg, query both the penguin and the weightplate separately and then in the fetchExerciseSearchData check which one should be displayed based on the search term
+// See if you can combine the two loops in viewSwap as they should have the same number of items
+// create separate findExerciseByBaseId functions based on the place where user is searching (exercises view, favorites view and workouts view)
+// Any functions that take the Exercise Object (handleFavoriteClick, etc) as a parameter may change to handle a simpler Exercise Object (name, image, baseId)
+// Instead of clearing and adding the workouts to the addExerciseForm each time the form is rendered, the form should be rendered once when the DOM content is loaded and then items added/removed as the workouts are updated
