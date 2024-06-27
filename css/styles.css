@@ -285,6 +285,10 @@ section {
   justify-content: center;
 }
 
+.workout-data-container i {
+  padding-left: 4px;
+}
+
 .workout-title {
   padding-left: 50px;
 }
