@@ -744,7 +744,6 @@ function createMouseoverEventListeners(workoutId: number): void {
         }
       }
       $exerciseLiToRemove.remove();
-      console.log('workouts', fitlogData.workouts);
     }
   });
 }

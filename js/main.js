@@ -572,7 +572,7 @@ function createMouseoverEventListeners(workoutId) {
             let removeObject = null;
             for (let dayIndex = 0; dayIndex < workout.days.length; dayIndex++) {
               const day = workout.days[dayIndex];
-              for (let [dayKey, exercises] of Object.entries(day)) {
+              for (const [dayKey, exercises] of Object.entries(day)) {
                 for (
                   let exerciseIndex = 0;
                   exerciseIndex < exercises.length;
@@ -596,7 +596,6 @@ function createMouseoverEventListeners(workoutId) {
         }
       }
       $exerciseLiToRemove.remove();
-      console.log('workouts', fitlogData.workouts);
     }
   });
 }
