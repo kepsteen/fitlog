@@ -89,7 +89,7 @@
       </div>
     </header>
     <main>
-      <section class="home flex flex-col align-center hidden" data-view="home">
+      <section class="home flex flex-col align-center" data-view="home">
         <h1>Begin Your Fitlog Journey</h1>
         <button type="button" class="big-btn yellow-btn" id="begin">
           Begin
@@ -120,6 +120,28 @@
             placeholder="Exercise" />
           <button type="submit" class="yellow-btn">Search</button>
         </form>
+        <div class="spinner">
+          <img
+            src="images/weightplate.webp"
+            alt="Loading"
+            class="hidden"
+            id="loading-img" />
+        </div>
+        <div class="penguin-press-img flex flex-col align-center hidden">
+          <h3>Pumping out your Results</h3>
+          <iframe
+            src="https://giphy.com/embed/5g6ijNORnMoqoJ2o1X"
+            width="480"
+            height="480"
+            class="giphy-embed"
+            allowfullscreen></iframe>
+          <p>
+            <a
+              href="https://giphy.com/gifs/pudgypenguins-weights-bench-press-5g6ijNORnMoqoJ2o1X"
+              >via GIPHY</a
+            >
+          </p>
+        </div>
         <div
           class="card-list flex wrap align-center"
           id="exercises-card-list"></div>
@@ -207,7 +229,7 @@
         </form>
       </section>
       <section
-        class="workouts flex flex-col"
+        class="workouts flex flex-col hidden"
         data-view="workouts-view"></section>
       <dialog class="add-exercise-modal">
         <i class="fa-solid fa-x" style="color: #001d3d"></i>

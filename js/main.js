@@ -23,6 +23,7 @@ const $addExerciseBtn = document.querySelector('.add-exercise-btn');
 const $addExerciseModal = document.querySelector('.add-exercise-modal');
 const $addExerciseForm = document.querySelector('#add-exercise-form');
 const $workoutsSection = document.querySelector('.workouts');
+const $navAnchorNodeList = document.querySelectorAll('.nav-links a');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -44,6 +45,7 @@ if (!$addExerciseBtn) throw new Error('no add exercise btn found');
 if (!$addExerciseModal) throw new Error('no add exercise modal found');
 if (!$addExerciseForm) throw new Error('no add exercise form found');
 if (!$workoutsSection) throw new Error('no workouts section');
+if (!$navAnchorNodeList) throw new Error('no nav-links anchor node list found');
 function renderExercises(exerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -134,7 +136,12 @@ async function fetchExerciseDetails(baseId, id, img) {
   return exerciseObj;
 }
 async function fetchExerciseSearchData(term) {
+  let loadingImg = document.querySelector('#loading-img');
+  loadingImg?.classList.add('hidden');
+  if (term === 'bench press')
+    loadingImg = document.querySelector('.penguin-press-img');
   try {
+    if (loadingImg) loadingImg.classList.remove('hidden');
     const response = await fetch(
       `https://wger.de/api/v2/exercise/search/?language=2&term=${term}`,
     );
@@ -163,6 +170,8 @@ async function fetchExerciseSearchData(term) {
     }
   } catch (error) {
     console.error(error);
+  } finally {
+    if (loadingImg) loadingImg.classList.add('hidden');
   }
 }
 function viewSwap(view) {
@@ -171,6 +180,15 @@ function viewSwap(view) {
       $views[i].classList.remove('hidden');
     } else {
       $views[i].classList.add('hidden');
+    }
+  }
+  if ($navAnchorNodeList) {
+    for (let i = 0; i < $navAnchorNodeList.length; i++) {
+      if ($navAnchorNodeList[i].dataset.view === view) {
+        $navAnchorNodeList[i].classList.add('active-link');
+      } else {
+        $navAnchorNodeList[i].classList.remove('active-link');
+      }
     }
   }
 }
