@@ -417,7 +417,7 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
   $iconContainerDiv.setAttribute('class', 'caret-container flex align-center');
 
   const $icon = document.createElement('i');
-  $icon.setAttribute('class', 'fa-solid fa-caret-right');
+  $icon.setAttribute('class', 'fa-solid fa-caret-right caret');
   $icon.setAttribute('data-workout-id', `${workout.workoutId}`);
 
   $iconContainerDiv.appendChild($icon);
@@ -443,14 +443,20 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
   workout.exercises.forEach((exercise: Exercise) => {
     const $exerciseLi = document.createElement('li');
     $exerciseLi.setAttribute('data-base-id', `${exercise.baseId}`);
-
     $exerciseLi.setAttribute('data-workout-id', `${workout.workoutId}`);
     $exerciseLi.setAttribute('draggable', 'true');
+
     const $strong = document.createElement('strong');
     $strong.textContent = exercise.name + ':';
     $exerciseLi.appendChild($strong);
+
+    const xmark = document.createElement('i');
+    xmark.setAttribute('class', 'fa-solid fa-xmark hidden');
+    xmark.setAttribute('style', 'color: #f1095a;');
+
     const textNode = document.createTextNode(' 3 x 10-12 reps');
     $exerciseLi.appendChild(textNode);
+    $exerciseLi.appendChild(xmark);
     $exercisesUl.appendChild($exerciseLi);
   });
 
@@ -479,8 +485,15 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
       const $strong = document.createElement('strong');
       $strong.textContent = exercise.name + ':';
       $exerciseLi.appendChild($strong);
+
+      const xmark = document.createElement('i');
+      xmark.setAttribute('class', 'fa-solid fa-xmark hidden');
+      xmark.setAttribute('style', 'color: #f1095a;');
+
       const textNode = document.createTextNode(' 3 x 10-12 reps');
       $exerciseLi.appendChild(textNode);
+      $exerciseLi.appendChild(xmark);
+
       $dayUl.appendChild($exerciseLi);
     });
 
@@ -595,9 +608,15 @@ function renderAddedExercise(workoutIdArr: number[], exercise: Exercise): void {
         li.setAttribute('draggable', 'true');
         const $strong = document.createElement('strong');
         $strong.textContent = exercise.name + ':';
+
+        const xmark = document.createElement('i');
+        xmark.setAttribute('class', 'fa-solid fa-xmark hidden');
+        xmark.setAttribute('style', 'color: #f1095a;');
+
         li.appendChild($strong);
         const textNode = document.createTextNode(' 3 x 10-12 reps');
         li.appendChild(textNode);
+        li.appendChild(xmark);
 
         const $exercisesDiv = workoutNode.querySelector('.exercises');
         if (!$exercisesDiv) throw new Error('no exercises div found');
@@ -653,6 +672,82 @@ function assignExercisesToDays(
   }
 }
 
+function createMouseoverEventListeners(workoutId: number): void {
+  const $workoutDataContainer = document.querySelector(
+    `.workout[data-workout-id="${workoutId}"]`,
+  );
+  if (!$workoutDataContainer)
+    throw new Error('no workout data container found');
+
+  $workoutDataContainer.addEventListener('mouseover', (event: Event) => {
+    const $eventTarget = event.target as HTMLElement;
+    if ($eventTarget.tagName === 'LI') {
+      const xmark = $eventTarget.querySelector('.fa-xmark');
+      if (!xmark) throw new Error('no xmark found');
+
+      xmark.classList.remove('hidden');
+      setTimeout(() => {
+        xmark.classList.add('hidden');
+      }, 1000);
+    }
+  });
+  $workoutDataContainer.addEventListener('click', (event: Event) => {
+    const $eventTarget = event.target as HTMLElement;
+    if (
+      $eventTarget.tagName === 'I' &&
+      $eventTarget.classList.contains('fa-xmark')
+    ) {
+      const $exerciseLiToRemove = $eventTarget.closest('li') as HTMLElement;
+      if (!$exerciseLiToRemove.dataset.baseId) return;
+      if (!$exerciseLiToRemove.dataset.workoutId) return;
+      let indexToRemove = null;
+      for (const workout of fitlogData.workouts) {
+        if (
+          workout.workoutId === parseInt($exerciseLiToRemove.dataset.workoutId)
+        ) {
+          for (let i = 0; i < workout.exercises.length; i++) {
+            if (
+              workout.exercises[i].baseId ===
+              parseInt($exerciseLiToRemove.dataset.baseId)
+            ) {
+              indexToRemove = i;
+            }
+          }
+          if (indexToRemove !== null) {
+            workout.exercises.splice(indexToRemove, 1);
+          }
+          if (indexToRemove === null) {
+            let removeObject = null;
+            for (let dayIndex = 0; dayIndex < workout.days.length; dayIndex++) {
+              const day = workout.days[dayIndex];
+              for (const [dayKey, exercises] of Object.entries(day)) {
+                for (
+                  let exerciseIndex = 0;
+                  exerciseIndex < exercises.length;
+                  exerciseIndex++
+                ) {
+                  if (
+                    exercises[exerciseIndex].baseId ===
+                    parseInt($exerciseLiToRemove.dataset.baseId)
+                  ) {
+                    removeObject = { dayIndex, dayKey, exerciseIndex };
+                  }
+                }
+              }
+            }
+            if (removeObject) {
+              workout.days[removeObject.dayIndex][
+                parseInt(removeObject.dayKey)
+              ].splice(removeObject.exerciseIndex, 1);
+            }
+          }
+        }
+      }
+      $exerciseLiToRemove.remove();
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   fitlogData.favorites.forEach((exercise: Exercise) => {
     $favoritesCardList.appendChild(renderExercises(exercise));
@@ -662,12 +757,16 @@ document.addEventListener('DOMContentLoaded', () => {
   fitlogData.workouts.forEach((workout: Workout) => {
     $workoutsSection.appendChild(renderWorkouts(workout));
     createDragNDropEventListeners(workout.workoutId);
+    createMouseoverEventListeners(workout.workoutId);
   });
 });
 
 $workoutsSection.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
-  if ($eventTarget.tagName === 'I') {
+  if (
+    $eventTarget.tagName === 'I' &&
+    $eventTarget.classList.contains('caret')
+  ) {
     const $workoutContainer = $eventTarget.closest(
       '.workout',
     ) as HTMLDivElement;
@@ -834,6 +933,7 @@ $newWorkoutForm.addEventListener('submit', (event: Event) => {
   viewSwap('exercises-view');
   $workoutsSection.appendChild(renderWorkouts(newWorkout));
   createDragNDropEventListeners(newWorkout.workoutId);
+  createMouseoverEventListeners(newWorkout.workoutId);
 });
 
 $addExerciseModal.addEventListener('click', (event: Event) => {
