@@ -218,6 +218,7 @@ async function fetchExerciseDetails(
 }
 
 async function fetchExerciseSearchData(term: string): Promise<void> {
+  $noResults?.classList.add('hidden');
   let loadingImg = document.querySelector('#loading-img');
   loadingImg?.classList.add('hidden');
   if (term === 'bench press')
@@ -347,13 +348,14 @@ function handleFavoriteClick(
   for (let i = 0; i < $exercisesNodeList.length; i++) {
     const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
     if (parseInt(nodeBaseId) === exerciseObj.baseId) {
-      const $heartIcon = $exercisesNodeList[i].lastElementChild;
+      const $heartIcon = $exercisesNodeList[i].querySelector('.fa-heart');
+      if (!$heartIcon) throw new Error('no heart icon found');
       if (exerciseObj.favorite) {
-        $heartIcon?.classList.remove('fa-regular');
-        $heartIcon?.classList.add('fa-solid');
+        $heartIcon.classList.remove('fa-regular');
+        $heartIcon.classList.add('fa-solid');
       } else {
-        $heartIcon?.classList.add('fa-regular');
-        $heartIcon?.classList.remove('fa-solid');
+        $heartIcon.classList.add('fa-regular');
+        $heartIcon.classList.remove('fa-solid');
       }
     }
   }
