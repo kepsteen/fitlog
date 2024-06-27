@@ -222,8 +222,8 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
   loadingImg?.classList.add('hidden');
   if (term === 'bench press')
     loadingImg = document.querySelector('.penguin-press-img');
+  if (loadingImg) loadingImg.classList.remove('hidden');
   try {
-    if (loadingImg) loadingImg.classList.remove('hidden');
     const response = await fetch(
       `https://wger.de/api/v2/exercise/search/?language=2&term=${term}`,
     );
@@ -246,6 +246,7 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
       exerciseObjArr.forEach((element) => {
         $exercisesCardList.appendChild(renderExercises(element));
       });
+
       $noResults?.classList.add('hidden');
     } else {
       $noResults?.classList.remove('hidden');
@@ -995,3 +996,12 @@ $addExerciseForm.addEventListener('submit', (event: Event): void => {
   }
   renderAddedExercise(selectedWorkoutIds, currentExercise);
 });
+
+// Change renderExercises to take simpler exerciseObj as parameter because to render the cards you only need the baseId, image and name
+// fetch the additional exercise details only (hit the baseId endpoint) after an exercise is clicked
+// Make sure to validate any queries and query globally if an element is going to be queried multiple times
+// For the loadingImg, query both the penguin and the weightplate separately and then in the fetchExerciseSearchData check which one should be displayed based on the search term
+// See if you can combine the two loops in viewSwap as they should have the same number of items
+// create separate findExerciseByBaseId functions based on the place where user is searching (exercises view, favorites view and workouts view)
+// Any functions that take the Exercise Object (handleFavoriteClick, etc) as a parameter may change to handle a simpler Exercise Object (name, image, baseId)
+// Instead of clearing and adding the workouts to the addExerciseForm each time the form is rendered, the form should be rendered once when the DOM content is loaded and then items added/removed as the workouts are updated
