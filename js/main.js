@@ -446,38 +446,45 @@ function createDragNDropEventListeners(workoutId) {
     `li[data-workout-id="${workoutId}"]`,
   );
   if (!$exercisesNodeList) throw new Error('no exercises container list found');
-  $exercisesNodeList.forEach((element) => {
-    element.addEventListener('dragstart', (event) => {
+  // Add dragstart Event Listeners
+  $exercisesNodeList.forEach((exerciseElement) => {
+    exerciseElement.addEventListener('dragstart', (event) => {
       if (event.dataTransfer) {
         event.dataTransfer.clearData();
-        event.dataTransfer.setData('text/plain', element.dataset.baseId);
+        event.dataTransfer.setData(
+          'text/plain',
+          exerciseElement.dataset.baseId,
+        );
       }
     });
   });
   const $targetsNodeList = $workout.querySelectorAll(`.target-${workoutId}`);
   if (!$targetsNodeList) throw new Error('no targets node list found');
-  $targetsNodeList.forEach((element) => {
-    element.addEventListener('dragover', (event1) => {
-      event1.preventDefault();
+  // Add dragover and drop Event Listeners
+  $targetsNodeList.forEach((targetElement) => {
+    if (!targetElement) return;
+    targetElement.addEventListener('dragover', (dragoverEvent) => {
+      dragoverEvent.preventDefault();
     });
-    element.addEventListener('drop', (event2) => {
-      event2.preventDefault();
-      if (event2.dataTransfer) {
-        const data = event2.dataTransfer.getData('text');
+    targetElement.addEventListener('drop', (dropEvent) => {
+      dropEvent.preventDefault();
+      if (dropEvent.dataTransfer) {
+        const data = dropEvent.dataTransfer.getData('text');
         const source = $workout.querySelector(`[data-base-id="${data}"]`);
         if (source) {
           source.setAttribute('draggable', 'false');
-          element?.appendChild(source);
+          targetElement.appendChild(source);
         }
-        const $eventTarget = event2.target;
+        const $eventTarget = dropEvent.target;
         const targetNumDay = $eventTarget.closest('ul')?.dataset.numDay;
         if (!targetNumDay) return;
+        // Update Workout Object
         assignExercisesToDays(
           parseInt(data),
           parseInt(targetNumDay),
           workoutId,
         );
-        event2.dataTransfer.clearData();
+        dropEvent.dataTransfer.clearData();
       }
     });
   });
