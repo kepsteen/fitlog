@@ -45,8 +45,6 @@ interface NewWorkoutFormElements extends HTMLFormControlsCollection {
   days: HTMLSelectElement;
 }
 
-let simpleExerciseObjArr: SimpleExercise[] = [];
-
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -269,7 +267,8 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    simpleExerciseObjArr = [];
+    fitlogData.exerciseSearchResults = [];
+
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
         const simpleExerciseObj: SimpleExercise = {
@@ -282,14 +281,13 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
         if (findExerciseInCardList(simpleExerciseObj.baseId)) {
           simpleExerciseObj.favorite = true;
         }
-        simpleExerciseObjArr.push(simpleExerciseObj);
+        fitlogData.exerciseSearchResults.push(simpleExerciseObj);
       }
     }
-    if (simpleExerciseObjArr.length) {
-      simpleExerciseObjArr.forEach((element) => {
+    if (fitlogData.exerciseSearchResults.length) {
+      fitlogData.exerciseSearchResults.forEach((element) => {
         $exercisesCardList.appendChild(renderExercises(element));
       });
-
       $noResults.classList.add('hidden');
     } else {
       $noResults.classList.remove('hidden');
@@ -329,7 +327,12 @@ function clearCardList(): void {
 }
 
 function findExerciseInCardList(baseId: number): SimpleExercise | null {
-  for (const simpleExercise of simpleExerciseObjArr) {
+  // for (const simpleExercise of simpleExerciseObjArr) {
+  //   if (simpleExercise.baseId === baseId) {
+  //     return simpleExercise;
+  //   }
+  // }
+  for (const simpleExercise of fitlogData.exerciseSearchResults) {
     if (simpleExercise.baseId === baseId) {
       return simpleExercise;
     }
@@ -618,7 +621,6 @@ function createDragNDropEventListeners(workoutId: number): void {
   ) as NodeListOf<HTMLElement>;
   if (!$exercisesNodeList) throw new Error('no exercises container list found');
 
-  // Add dragstart Event Listeners
   $exercisesNodeList.forEach((exerciseElement) => {
     exerciseElement.addEventListener(
       'dragstart',
@@ -639,8 +641,6 @@ function createDragNDropEventListeners(workoutId: number): void {
   ) as NodeListOf<HTMLElement>;
   if (!$targetsNodeList) throw new Error('no targets node list found');
 
-  // Add dragover and drop Event Listeners
-
   $targetsNodeList.forEach((droppableElement) => {
     if (!droppableElement) return;
     droppableElement.addEventListener(
@@ -650,8 +650,25 @@ function createDragNDropEventListeners(workoutId: number): void {
       },
     );
 
+    droppableElement.addEventListener(
+      'dragenter',
+      (dragoverEvent: DragEvent) => {
+        dragoverEvent.preventDefault();
+        droppableElement.classList.add('dragover');
+      },
+    );
+
+    droppableElement.addEventListener(
+      'dragleave',
+      (dragoverEvent: DragEvent) => {
+        dragoverEvent.preventDefault();
+        droppableElement.classList.remove('dragover');
+      },
+    );
+
     droppableElement.addEventListener('drop', (dropEvent: DragEvent) => {
       dropEvent.preventDefault();
+      droppableElement.classList.remove('dragover');
       if (dropEvent.dataTransfer) {
         const data = dropEvent.dataTransfer.getData('text');
         const source = $workout.querySelector(`[data-base-id="${data}"]`);
@@ -835,6 +852,9 @@ function createMouseoverEventListeners(workoutId: number): void {
 document.addEventListener('DOMContentLoaded', async () => {
   fitlogData.favorites.forEach((exercise: SimpleExercise) => {
     $favoritesCardList.appendChild(renderExercises(exercise));
+  });
+  fitlogData.exerciseSearchResults.forEach((element) => {
+    $exercisesCardList.appendChild(renderExercises(element));
   });
   renderAddToWorkoutForm();
   if (fitlogData.favorites.length === 0)

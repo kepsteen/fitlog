@@ -1,5 +1,4 @@
 'use strict';
-let simpleExerciseObjArr = [];
 const $searchForm = document.querySelector('#search-form');
 const $views = document.querySelectorAll('section');
 const $beginBtn = document.querySelector('#begin');
@@ -171,7 +170,7 @@ async function fetchExerciseSearchData(term) {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    simpleExerciseObjArr = [];
+    fitlogData.exerciseSearchResults = [];
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
         const simpleExerciseObj = {
@@ -184,11 +183,11 @@ async function fetchExerciseSearchData(term) {
         if (findExerciseInCardList(simpleExerciseObj.baseId)) {
           simpleExerciseObj.favorite = true;
         }
-        simpleExerciseObjArr.push(simpleExerciseObj);
+        fitlogData.exerciseSearchResults.push(simpleExerciseObj);
       }
     }
-    if (simpleExerciseObjArr.length) {
-      simpleExerciseObjArr.forEach((element) => {
+    if (fitlogData.exerciseSearchResults.length) {
+      fitlogData.exerciseSearchResults.forEach((element) => {
         $exercisesCardList.appendChild(renderExercises(element));
       });
       $noResults.classList.add('hidden');
@@ -227,7 +226,12 @@ function clearCardList() {
   }
 }
 function findExerciseInCardList(baseId) {
-  for (const simpleExercise of simpleExerciseObjArr) {
+  // for (const simpleExercise of simpleExerciseObjArr) {
+  //   if (simpleExercise.baseId === baseId) {
+  //     return simpleExercise;
+  //   }
+  // }
+  for (const simpleExercise of fitlogData.exerciseSearchResults) {
     if (simpleExercise.baseId === baseId) {
       return simpleExercise;
     }
@@ -473,7 +477,6 @@ function createDragNDropEventListeners(workoutId) {
     `li[data-workout-id="${workoutId}"]`,
   );
   if (!$exercisesNodeList) throw new Error('no exercises container list found');
-  // Add dragstart Event Listeners
   $exercisesNodeList.forEach((exerciseElement) => {
     exerciseElement.addEventListener('dragstart', (dragstartEvent) => {
       if (dragstartEvent.dataTransfer) {
@@ -487,14 +490,22 @@ function createDragNDropEventListeners(workoutId) {
   });
   const $targetsNodeList = $workout.querySelectorAll(`.target-${workoutId}`);
   if (!$targetsNodeList) throw new Error('no targets node list found');
-  // Add dragover and drop Event Listeners
   $targetsNodeList.forEach((droppableElement) => {
     if (!droppableElement) return;
     droppableElement.addEventListener('dragover', (dragoverEvent) => {
       dragoverEvent.preventDefault();
     });
+    droppableElement.addEventListener('dragenter', (dragoverEvent) => {
+      dragoverEvent.preventDefault();
+      droppableElement.classList.add('dragover');
+    });
+    droppableElement.addEventListener('dragleave', (dragoverEvent) => {
+      dragoverEvent.preventDefault();
+      droppableElement.classList.remove('dragover');
+    });
     droppableElement.addEventListener('drop', (dropEvent) => {
       dropEvent.preventDefault();
+      droppableElement.classList.remove('dragover');
       if (dropEvent.dataTransfer) {
         const data = dropEvent.dataTransfer.getData('text');
         const source = $workout.querySelector(`[data-base-id="${data}"]`);
@@ -656,6 +667,9 @@ function createMouseoverEventListeners(workoutId) {
 document.addEventListener('DOMContentLoaded', async () => {
   fitlogData.favorites.forEach((exercise) => {
     $favoritesCardList.appendChild(renderExercises(exercise));
+  });
+  fitlogData.exerciseSearchResults.forEach((element) => {
+    $exercisesCardList.appendChild(renderExercises(element));
   });
   renderAddToWorkoutForm();
   if (fitlogData.favorites.length === 0)
