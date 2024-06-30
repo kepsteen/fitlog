@@ -1,9 +1,9 @@
 /* exported data */
 interface Data {
-  favorites: Exercise[];
+  favorites: SimpleExercise[];
   workouts: Workout[];
   nextWorkoutId: number;
-  viewing: null | Exercise;
+  viewing: null | SimpleExercise;
 }
 
 let fitlogData: Data = {
