@@ -34,7 +34,7 @@ const $addExerciseFormSubmitBtn = document.querySelector(
 const $addExerciseFormItemsContainer = document.querySelector(
   '.add-exercise-form-items',
 );
-console.log($addExerciseFormItemsContainer);
+const $loadingOverlay = document.querySelector('.loading-overlay');
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
 if (!$beginBtn) throw new Error('no begin button found');
@@ -65,6 +65,7 @@ if (!$addExerciseFormSubmitBtn)
   throw new Error('no add exercise form submit button');
 if (!$addExerciseFormItemsContainer)
   throw new Error('no add exercise form items found');
+if (!$loadingOverlay) throw new Error('no loading overlay found');
 function renderExercises(simpleExerciseObj) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
@@ -97,6 +98,7 @@ function renderExercises(simpleExerciseObj) {
   return $card;
 }
 async function fetchExerciseDetails(simpleExerciseObj) {
+  $loadingOverlay.classList.remove('hidden');
   try {
     const response = await fetch(
       `https://wger.de/api/v2/exercisebaseinfo/${simpleExerciseObj.baseId}/`,
@@ -105,6 +107,7 @@ async function fetchExerciseDetails(simpleExerciseObj) {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
+    $loadingOverlay.classList.add('hidden');
     const primaryMuscles = [];
     const secondaryMuscles = [];
     const equipment = [];
@@ -149,6 +152,8 @@ async function fetchExerciseDetails(simpleExerciseObj) {
     populateExerciseDetails(exerciseObj);
   } catch (error) {
     console.error('error', error);
+  } finally {
+    $loadingOverlay.classList.add('hidden');
   }
 }
 async function fetchExerciseSearchData(term) {
@@ -286,7 +291,7 @@ function handleFavoriteClick(simpleExerciseObj, targetIcon) {
   }
 }
 function populateExerciseDetails(exerciseObj) {
-  fitlogData.viewing = exerciseObj;
+  // fitlogData.viewing = exerciseObj;
   $exerciseDetailSection.setAttribute('data-base-id', `${exerciseObj.baseId}`);
   $detailsTitle.textContent = exerciseObj.name + ' ';
   if (exerciseObj.favorite)
@@ -648,7 +653,7 @@ function createMouseoverEventListeners(workoutId) {
     }
   });
 }
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   fitlogData.favorites.forEach((exercise) => {
     $favoritesCardList.appendChild(renderExercises(exercise));
   });
@@ -660,6 +665,9 @@ document.addEventListener('DOMContentLoaded', () => {
     createDragNDropEventListeners(workout.workoutId);
     createMouseoverEventListeners(workout.workoutId);
   });
+  if (fitlogData.viewing && fitlogData.currentView === 'exercise-details') {
+    await fetchExerciseDetails(fitlogData.viewing);
+  }
   viewSwap(fitlogData.currentView);
 });
 $workoutsSection.addEventListener('click', (event) => {
@@ -750,7 +758,7 @@ $cardLists.forEach(($cardList) => {
 });
 $exerciseDetailSection.addEventListener('click', (event) => {
   const $eventTarget = event.target;
-  const $section = $eventTarget.closest('section.details');
+  const $section = $eventTarget.closest('section.details-view');
   const exercise = findExerciseInCardList(parseInt($section.dataset.baseId));
   if (
     $eventTarget.tagName === 'I' &&
