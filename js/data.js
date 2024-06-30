@@ -4,6 +4,7 @@ let fitlogData = {
   workouts: [],
   nextWorkoutId: 1,
   viewing: null,
+  currentView: 'home',
 };
 window.addEventListener('beforeunload', () => {
   const dataJSON = JSON.stringify(fitlogData);

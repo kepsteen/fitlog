@@ -97,7 +97,6 @@ function renderExercises(simpleExerciseObj) {
   return $card;
 }
 async function fetchExerciseDetails(simpleExerciseObj) {
-  $weightPlateSpinner.classList.remove('hidden');
   try {
     const response = await fetch(
       `https://wger.de/api/v2/exercisebaseinfo/${simpleExerciseObj.baseId}/`,
@@ -150,8 +149,6 @@ async function fetchExerciseDetails(simpleExerciseObj) {
     populateExerciseDetails(exerciseObj);
   } catch (error) {
     console.error('error', error);
-  } finally {
-    $weightPlateSpinner.classList.add('hidden');
   }
 }
 async function fetchExerciseSearchData(term) {
@@ -216,6 +213,7 @@ function viewSwap(view) {
       }
     }
   }
+  fitlogData.currentView = view;
 }
 function clearCardList() {
   while ($exercisesCardList.hasChildNodes()) {
@@ -662,6 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createDragNDropEventListeners(workout.workoutId);
     createMouseoverEventListeners(workout.workoutId);
   });
+  viewSwap(fitlogData.currentView);
 });
 $workoutsSection.addEventListener('click', (event) => {
   const $eventTarget = event.target;
