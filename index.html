@@ -153,7 +153,7 @@
         </div>
       </section>
       <section
-        class="details flex justify-center wrap hidden"
+        class="details-view flex justify-center wrap hidden"
         data-view="exercise-details"
         id="details-section">
         <div
@@ -234,9 +234,19 @@
       <dialog class="add-exercise-modal">
         <i class="fa-solid fa-x" style="color: #001d3d"></i>
         <h1>Add to Workout:</h1>
-        <form action="" class="flex flex-col" id="add-exercise-form"></form>
+        <form action="" class="flex flex-col" id="add-exercise-form">
+          <div class="flex flex-col justify-center">
+            <div class="add-exercise-form-items"></div>
+            <div class="flex justify-center">
+              <button type="submit" class="yellow-btn">Submit</button>
+            </div>
+          </div>
+        </form>
       </dialog>
     </main>
+    <div class="loading-overlay flex justify-center align-center hidden">
+      <img src="images/weightplate.webp" alt="weight plate loading spinner" />
+    </div>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
   </body>

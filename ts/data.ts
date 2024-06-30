@@ -1,9 +1,11 @@
 /* exported data */
 interface Data {
-  favorites: Exercise[];
+  favorites: SimpleExercise[];
   workouts: Workout[];
   nextWorkoutId: number;
-  viewing: null | Exercise;
+  viewing: null | SimpleExercise;
+  currentView: string;
+  exerciseSearchResults: SimpleExercise[];
 }
 
 let fitlogData: Data = {
@@ -11,6 +13,8 @@ let fitlogData: Data = {
   workouts: [],
   nextWorkoutId: 1,
   viewing: null,
+  currentView: 'home',
+  exerciseSearchResults: [],
 };
 
 window.addEventListener('beforeunload', () => {

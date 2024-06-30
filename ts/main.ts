@@ -9,6 +9,14 @@ interface Muscle {
   id?: number;
 }
 
+interface SimpleExercise {
+  baseId: number;
+  id: number;
+  image: string;
+  name: string;
+  favorite: boolean;
+}
+
 interface Exercise {
   name: string;
   image: string;
@@ -22,13 +30,13 @@ interface Exercise {
 }
 
 interface Day {
-  [num: number]: Exercise[];
+  [num: number]: SimpleExercise[];
 }
 
 interface Workout {
   name: string;
   days: Day[];
-  exercises: Exercise[];
+  exercises: SimpleExercise[];
   workoutId: number;
 }
 
@@ -36,8 +44,6 @@ interface NewWorkoutFormElements extends HTMLFormControlsCollection {
   name: HTMLInputElement;
   days: HTMLSelectElement;
 }
-
-let exerciseObjArr: Exercise[] = [];
 
 const $searchForm = document.querySelector('#search-form') as HTMLFormElement;
 const $views = document.querySelectorAll('section');
@@ -48,7 +54,7 @@ const $exercisesCardList = document.querySelector(
 const $header = document.querySelector('header');
 const $hamburger = document.querySelector('.hamburger');
 const $hamburgerLinks = document.querySelector('.hamburger-links');
-const $noResults = document.querySelector('.no-results');
+const $noResults = document.querySelector('.no-results') as HTMLElement;
 const $detailsTitle = document.querySelector(
   '.details-title',
 ) as HTMLHeadingElement;
@@ -93,6 +99,27 @@ const $workoutsSection = document.querySelector('.workouts') as HTMLElement;
 const $navAnchorNodeList = document.querySelectorAll(
   '.nav-links a',
 ) as NodeListOf<HTMLElement>;
+const $weightPlateSpinner = document.querySelector(
+  '#loading-img',
+) as HTMLElement;
+const $penguinPressImg = document.querySelector(
+  '.penguin-press-img',
+) as HTMLElement;
+const $exerciseSearch = document.querySelector(
+  '#exercise-search',
+) as HTMLInputElement;
+const $cardLists = document.querySelectorAll(
+  '.card-list',
+) as NodeListOf<HTMLElement>;
+const $addExerciseFormSubmitBtn = document.querySelector(
+  '#add-exercise-form button',
+);
+const $addExerciseFormItemsContainer = document.querySelector(
+  '.add-exercise-form-items',
+) as HTMLElement;
+const $loadingOverlay = document.querySelector(
+  '.loading-overlay',
+) as HTMLElement;
 
 if (!$searchForm) throw new Error('no search form found');
 if (!$views) throw new Error('no views found');
@@ -116,25 +143,34 @@ if (!$addExerciseModal) throw new Error('no add exercise modal found');
 if (!$addExerciseForm) throw new Error('no add exercise form found');
 if (!$workoutsSection) throw new Error('no workouts section');
 if (!$navAnchorNodeList) throw new Error('no nav-links anchor node list found');
+if (!$weightPlateSpinner) throw new Error('no weight plate spinner found');
+if (!$penguinPressImg) throw new Error('no penguin press img found');
+if (!$exerciseSearch) throw new Error('no exercise search input found');
+if (!$cardLists) throw new Error('no card lists found');
+if (!$addExerciseFormSubmitBtn)
+  throw new Error('no add exercise form submit button');
+if (!$addExerciseFormItemsContainer)
+  throw new Error('no add exercise form items found');
+if (!$loadingOverlay) throw new Error('no loading overlay found');
 
-function renderExercises(exerciseObj: Exercise): HTMLDivElement {
+function renderExercises(simpleExerciseObj: SimpleExercise): HTMLDivElement {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card flex space-between');
-  $card.setAttribute('data-base-id', `${exerciseObj.baseId}`);
+  $card.setAttribute('data-base-id', `${simpleExerciseObj.baseId}`);
 
   const $cardImg = document.createElement('img');
-  $cardImg.setAttribute('src', exerciseObj.image);
+  $cardImg.setAttribute('src', simpleExerciseObj.image);
   $cardImg.setAttribute('class', 'card-img');
 
   const $cardText = document.createElement('div');
   $cardText.setAttribute('class', 'card-text flex flex-col space-between');
   const $cardTitle = document.createElement('h3');
-  $cardTitle.textContent = exerciseObj.name;
+  $cardTitle.textContent = simpleExerciseObj.name;
 
   const $cardIcons = document.createElement('div');
   $cardIcons.setAttribute('class', 'card-icons flex justify-end');
   const $heart = document.createElement('i');
-  if (exerciseObj.favorite) {
+  if (simpleExerciseObj.favorite) {
     $heart.setAttribute('class', 'fa-solid fa-heart');
   } else {
     $heart.setAttribute('class', 'fa-regular fa-heart');
@@ -154,75 +190,74 @@ function renderExercises(exerciseObj: Exercise): HTMLDivElement {
 }
 
 async function fetchExerciseDetails(
-  baseId: number,
-  id: number,
-  img: string,
-): Promise<Exercise> {
-  const response = await fetch(
-    `https://wger.de/api/v2/exercisebaseinfo/${baseId}/`,
-  );
-  if (!response.ok) {
-    throw new Error(`HTTP Error: Status ${response.status}`);
-  }
-  const data = await response.json();
-  const primaryMuscles: Muscle[] = [];
-  const secondaryMuscles: Muscle[] = [];
-  const equipment: Equipment[] = [];
-  let exerciseName = '';
-  let exerciseDescription = '';
-  let favorited = false;
-  for (const muscle of data.muscles) {
-    primaryMuscles.push({
-      name: muscle.name,
-      nameEn: muscle.name_en,
-      id: muscle.id,
-    });
-  }
-  for (const muscle of data.muscles_secondary) {
-    secondaryMuscles.push({
-      name: muscle.name,
-      nameEn: muscle.name_en,
-      id: muscle.id,
-    });
-  }
-  for (const exercise of data.exercises) {
-    if (exercise.id === id) {
-      exerciseName = exercise.name;
-      exerciseDescription = exercise.description;
+  simpleExerciseObj: SimpleExercise,
+): Promise<void> {
+  $loadingOverlay.classList.remove('hidden');
+  try {
+    const response = await fetch(
+      `https://wger.de/api/v2/exercisebaseinfo/${simpleExerciseObj.baseId}/`,
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP Error: Status ${response.status}`);
     }
-  }
-  for (const element of data.equipment) {
-    equipment.push({
-      id: element.id,
-      name: element.name,
-    });
-  }
-  for (const element of fitlogData.favorites) {
-    if (baseId === element.baseId) {
-      favorited = true;
-    }
-  }
+    const data = await response.json();
+    $loadingOverlay.classList.add('hidden');
+    const primaryMuscles: Muscle[] = [];
+    const secondaryMuscles: Muscle[] = [];
+    const equipment: Equipment[] = [];
+    let exerciseDescription = '';
 
-  const exerciseObj = {
-    name: exerciseName,
-    description: exerciseDescription,
-    primaryMuscles,
-    secondaryMuscles,
-    equipment,
-    baseId,
-    image: img,
-    id,
-    favorite: favorited,
-  };
-  return exerciseObj;
+    for (const muscle of data.muscles) {
+      primaryMuscles.push({
+        name: muscle.name,
+        nameEn: muscle.name_en,
+        id: muscle.id,
+      });
+    }
+    for (const muscle of data.muscles_secondary) {
+      secondaryMuscles.push({
+        name: muscle.name,
+        nameEn: muscle.name_en,
+        id: muscle.id,
+      });
+    }
+    for (const exercise of data.exercises) {
+      if (exercise.id === simpleExerciseObj.id) {
+        exerciseDescription = exercise.description;
+      }
+    }
+    for (const element of data.equipment) {
+      equipment.push({
+        id: element.id,
+        name: element.name,
+      });
+    }
+    for (const element of fitlogData.favorites) {
+      if (simpleExerciseObj.baseId === element.baseId) {
+        simpleExerciseObj.favorite = true;
+      }
+    }
+    const exerciseObj = {
+      ...simpleExerciseObj,
+      description: exerciseDescription,
+      primaryMuscles,
+      secondaryMuscles,
+      equipment,
+    };
+    populateExerciseDetails(exerciseObj);
+  } catch (error) {
+    console.error('error', error);
+  } finally {
+    $loadingOverlay.classList.add('hidden');
+  }
 }
 
 async function fetchExerciseSearchData(term: string): Promise<void> {
-  $noResults?.classList.add('hidden');
-  let loadingImg = document.querySelector('#loading-img');
-  loadingImg?.classList.add('hidden');
-  if (term === 'bench press')
-    loadingImg = document.querySelector('.penguin-press-img');
+  $noResults.classList.add('hidden');
+  $weightPlateSpinner.classList.add('hidden');
+  $penguinPressImg.classList.add('hidden');
+  let loadingImg = $weightPlateSpinner;
+  if (term === 'bench press') loadingImg = $penguinPressImg;
   if (loadingImg) loadingImg.classList.remove('hidden');
   try {
     const response = await fetch(
@@ -232,25 +267,30 @@ async function fetchExerciseSearchData(term: string): Promise<void> {
       throw new Error(`HTTP Error: Status ${response.status}`);
     }
     const data = await response.json();
-    exerciseObjArr = [];
+    fitlogData.exerciseSearchResults = [];
+
     for (let i = 0; i < data.suggestions.length; i++) {
       if (data.suggestions[i].data.image !== null) {
-        const exerciseObj: Exercise = await fetchExerciseDetails(
-          data.suggestions[i].data.base_id,
-          data.suggestions[i].data.id,
-          'https://wger.de' + data.suggestions[i].data.image,
-        );
-        exerciseObjArr.push(exerciseObj);
+        const simpleExerciseObj: SimpleExercise = {
+          baseId: data.suggestions[i].data.base_id,
+          id: data.suggestions[i].data.id,
+          name: data.suggestions[i].value,
+          image: 'https://wger.de' + data.suggestions[i].data.image,
+          favorite: false,
+        };
+        if (findExerciseInCardList(simpleExerciseObj.baseId)) {
+          simpleExerciseObj.favorite = true;
+        }
+        fitlogData.exerciseSearchResults.push(simpleExerciseObj);
       }
     }
-    if (exerciseObjArr.length > 0) {
-      exerciseObjArr.forEach((element) => {
+    if (fitlogData.exerciseSearchResults.length) {
+      fitlogData.exerciseSearchResults.forEach((element) => {
         $exercisesCardList.appendChild(renderExercises(element));
       });
-
-      $noResults?.classList.add('hidden');
+      $noResults.classList.add('hidden');
     } else {
-      $noResults?.classList.remove('hidden');
+      $noResults.classList.remove('hidden');
     }
   } catch (error) {
     console.error(error);
@@ -276,6 +316,7 @@ function viewSwap(view: string): void {
       }
     }
   }
+  fitlogData.currentView = view;
 }
 
 function clearCardList(): void {
@@ -285,10 +326,15 @@ function clearCardList(): void {
   }
 }
 
-function findExerciseByBaseId(baseId: number): Exercise | null {
-  for (const exercise of exerciseObjArr) {
-    if (exercise.baseId === baseId) {
-      return exercise;
+function findExerciseInCardList(baseId: number): SimpleExercise | null {
+  // for (const simpleExercise of simpleExerciseObjArr) {
+  //   if (simpleExercise.baseId === baseId) {
+  //     return simpleExercise;
+  //   }
+  // }
+  for (const simpleExercise of fitlogData.exerciseSearchResults) {
+    if (simpleExercise.baseId === baseId) {
+      return simpleExercise;
     }
   }
   for (const exercise of fitlogData.favorites) {
@@ -296,18 +342,11 @@ function findExerciseByBaseId(baseId: number): Exercise | null {
       return exercise;
     }
   }
-  for (const workout of fitlogData.workouts) {
-    for (const exercise of workout.exercises) {
-      if (exercise.baseId === baseId) {
-        return exercise;
-      }
-    }
-  }
   return null;
 }
 
 function handleFavoriteClick(
-  exerciseObj: Exercise,
+  simpleExerciseObj: SimpleExercise,
   targetIcon: HTMLElement,
 ): void {
   const $favoritesNodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
@@ -317,24 +356,24 @@ function handleFavoriteClick(
   if (targetIcon.classList.contains('fa-regular')) {
     targetIcon.classList.remove('fa-regular');
     targetIcon.classList.add('fa-solid');
-    exerciseObj.favorite = true;
-    fitlogData.favorites.push(exerciseObj);
-    $favoritesCardList.appendChild(renderExercises(exerciseObj));
+    simpleExerciseObj.favorite = true;
+    fitlogData.favorites.push(simpleExerciseObj);
+    $favoritesCardList.appendChild(renderExercises(simpleExerciseObj));
     $favoritesCta.classList.add('hidden');
   } else if (targetIcon.classList.contains('fa-solid')) {
     targetIcon.classList.remove('fa-solid');
     targetIcon.classList.add('fa-regular');
-    exerciseObj.favorite = false;
+    simpleExerciseObj.favorite = false;
     let indexToRemove = -1;
     for (let i = 0; i < fitlogData.favorites.length; i++) {
-      if (fitlogData.favorites[i].baseId === exerciseObj.baseId) {
+      if (fitlogData.favorites[i].baseId === simpleExerciseObj.baseId) {
         indexToRemove = i;
       }
     }
     fitlogData.favorites.splice(indexToRemove, 1);
     for (let i = 0; i < $favoritesNodeList.length; i++) {
       const nodeBaseId = $favoritesNodeList[i].dataset.baseId as string;
-      if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+      if (parseInt(nodeBaseId) === simpleExerciseObj.baseId) {
         $favoritesCardList.removeChild($favoritesNodeList[i]);
       }
     }
@@ -347,10 +386,10 @@ function handleFavoriteClick(
   if (!$exercisesNodeList) throw new Error('no exercise nodelist found');
   for (let i = 0; i < $exercisesNodeList.length; i++) {
     const nodeBaseId = $exercisesNodeList[i].dataset.baseId as string;
-    if (parseInt(nodeBaseId) === exerciseObj.baseId) {
+    if (parseInt(nodeBaseId) === simpleExerciseObj.baseId) {
       const $heartIcon = $exercisesNodeList[i].querySelector('.fa-heart');
       if (!$heartIcon) throw new Error('no heart icon found');
-      if (exerciseObj.favorite) {
+      if (simpleExerciseObj.favorite) {
         $heartIcon.classList.remove('fa-regular');
         $heartIcon.classList.add('fa-solid');
       } else {
@@ -361,42 +400,43 @@ function handleFavoriteClick(
   }
 }
 
-function populateExerciseDetails(exercise: Exercise): void {
-  $exerciseDetailSection.setAttribute('data-base-id', `${exercise.baseId}`);
-  $detailsTitle.textContent = exercise.name + ' ';
-  if (exercise.favorite)
+function populateExerciseDetails(exerciseObj: Exercise): void {
+  // fitlogData.viewing = exerciseObj;
+  $exerciseDetailSection.setAttribute('data-base-id', `${exerciseObj.baseId}`);
+  $detailsTitle.textContent = exerciseObj.name + ' ';
+  if (exerciseObj.favorite)
     $detailsHeart.setAttribute('class', 'fa-solid fa-heart');
-  if (!exercise.favorite)
+  if (!exerciseObj.favorite)
     $detailsHeart.setAttribute('class', 'fa-regular fa-heart');
-  $detailsImg.setAttribute('src', exercise.image);
-  if (exercise.primaryMuscles.length > 0) {
+  $detailsImg.setAttribute('src', exerciseObj.image);
+  if (exerciseObj.primaryMuscles.length > 0) {
     $detailsMusclePrim.textContent = '';
-    for (const muscle of exercise.primaryMuscles) {
+    for (const muscle of exerciseObj.primaryMuscles) {
       $detailsMusclePrim.textContent += `${muscle.name}, `;
     }
   } else {
     $detailsMusclePrim.textContent = 'no data found.';
   }
-  if (exercise.secondaryMuscles.length > 0) {
+  if (exerciseObj.secondaryMuscles.length > 0) {
     $detailsMuscleSec.textContent = '';
-    for (const muscle of exercise.secondaryMuscles) {
+    for (const muscle of exerciseObj.secondaryMuscles) {
       $detailsMuscleSec.textContent += `${muscle.name}, `;
     }
   } else {
     $detailsMuscleSec.textContent = 'no data found.';
   }
-  if (exercise.equipment.length > 0) {
+  if (exerciseObj.equipment.length > 0) {
     $detailsEquipment.textContent = '';
-    for (const equipment of exercise.equipment) {
+    for (const equipment of exerciseObj.equipment) {
       $detailsEquipment.textContent += `${equipment.name}, `;
     }
   } else {
     $detailsEquipment.textContent = 'no data found.';
   }
-  $detailsDescription.innerHTML = exercise.description;
+  $detailsDescription.innerHTML = exerciseObj.description;
 }
 
-function renderAddExerciseForm(): void {
+function renderAddToWorkoutForm(): void {
   fitlogData.workouts.forEach((workout: Workout) => {
     const $div = document.createElement('div');
     const $label = document.createElement('label');
@@ -411,17 +451,25 @@ function renderAddExerciseForm(): void {
 
     $div.appendChild($label);
     $div.appendChild($checkbox);
-    $addExerciseForm.appendChild($div);
+    $addExerciseFormItemsContainer.appendChild($div);
   });
+}
 
+function appendToAddToWorkoutForm(workout: Workout): void {
   const $div = document.createElement('div');
-  $div.setAttribute('class', 'flex justify-center');
-  const $submitBtn = document.createElement('button');
-  $submitBtn.setAttribute('type', 'submit');
-  $submitBtn.setAttribute('class', 'yellow-btn');
-  $submitBtn.textContent = 'Submit';
-  $div.appendChild($submitBtn);
-  $addExerciseForm.appendChild($div);
+  const $label = document.createElement('label');
+  $label.setAttribute('for', `${workout.workoutId}`);
+  $label.textContent = `${workout.name}`;
+
+  const $checkbox = document.createElement('input');
+  $checkbox.setAttribute('type', 'checkbox');
+  $checkbox.setAttribute('name', `workout-${workout.workoutId}-checkbox`);
+  $checkbox.setAttribute('id', `workout-${workout.workoutId}`);
+  $checkbox.setAttribute('value', `${workout.workoutId}`);
+
+  $div.appendChild($label);
+  $div.appendChild($checkbox);
+  $addExerciseFormItemsContainer.appendChild($div);
 }
 
 function renderWorkouts(workout: Workout): HTMLDivElement {
@@ -463,7 +511,7 @@ function renderWorkouts(workout: Workout): HTMLDivElement {
   $exercisesH3.textContent = 'Exercises';
 
   const $exercisesUl = document.createElement('ul');
-  workout.exercises.forEach((exercise: Exercise) => {
+  workout.exercises.forEach((exercise: SimpleExercise) => {
     const $exerciseLi = document.createElement('li');
     $exerciseLi.setAttribute('data-base-id', `${exercise.baseId}`);
     $exerciseLi.setAttribute('data-workout-id', `${workout.workoutId}`);
@@ -573,13 +621,19 @@ function createDragNDropEventListeners(workoutId: number): void {
   ) as NodeListOf<HTMLElement>;
   if (!$exercisesNodeList) throw new Error('no exercises container list found');
 
-  $exercisesNodeList.forEach((element) => {
-    element.addEventListener('dragstart', (event: DragEvent) => {
-      if (event.dataTransfer) {
-        event.dataTransfer.clearData();
-        event.dataTransfer.setData('text/plain', element.dataset.baseId!);
-      }
-    });
+  $exercisesNodeList.forEach((exerciseElement) => {
+    exerciseElement.addEventListener(
+      'dragstart',
+      (dragstartEvent: DragEvent) => {
+        if (dragstartEvent.dataTransfer) {
+          dragstartEvent.dataTransfer.clearData();
+          dragstartEvent.dataTransfer.setData(
+            'text/plain',
+            exerciseElement.dataset.baseId!,
+          );
+        }
+      },
+    );
   });
 
   const $targetsNodeList = $workout.querySelectorAll(
@@ -587,29 +641,53 @@ function createDragNDropEventListeners(workoutId: number): void {
   ) as NodeListOf<HTMLElement>;
   if (!$targetsNodeList) throw new Error('no targets node list found');
 
-  $targetsNodeList.forEach((element) => {
-    element.addEventListener('dragover', (event1: DragEvent) => {
-      event1.preventDefault();
-    });
+  $targetsNodeList.forEach((droppableElement) => {
+    if (!droppableElement) return;
+    droppableElement.addEventListener(
+      'dragover',
+      (dragoverEvent: DragEvent) => {
+        dragoverEvent.preventDefault();
+      },
+    );
 
-    element.addEventListener('drop', (event2: DragEvent) => {
-      event2.preventDefault();
-      if (event2.dataTransfer) {
-        const data = event2.dataTransfer.getData('text');
+    droppableElement.addEventListener(
+      'dragenter',
+      (dragoverEvent: DragEvent) => {
+        dragoverEvent.preventDefault();
+        droppableElement.classList.add('dragover');
+      },
+    );
+
+    droppableElement.addEventListener(
+      'dragleave',
+      (dragoverEvent: DragEvent) => {
+        dragoverEvent.preventDefault();
+        droppableElement.classList.remove('dragover');
+      },
+    );
+
+    droppableElement.addEventListener('drop', (dropEvent: DragEvent) => {
+      dropEvent.preventDefault();
+      droppableElement.classList.remove('dragover');
+      if (dropEvent.dataTransfer) {
+        const data = dropEvent.dataTransfer.getData('text');
         const source = $workout.querySelector(`[data-base-id="${data}"]`);
         if (source) {
           source.setAttribute('draggable', 'false');
-          element?.appendChild(source);
+          droppableElement.appendChild(source);
         }
-        const $eventTarget = event2.target as HTMLElement;
+
+        const $eventTarget = dropEvent.target as HTMLElement;
         const targetNumDay = $eventTarget.closest('ul')?.dataset.numDay;
         if (!targetNumDay) return;
+
+        // Update Workout Object
         assignExercisesToDays(
           parseInt(data),
           parseInt(targetNumDay),
           workoutId,
         );
-        event2.dataTransfer.clearData();
+        dropEvent.dataTransfer.clearData();
       }
     });
   });
@@ -771,10 +849,14 @@ function createMouseoverEventListeners(workoutId: number): void {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  fitlogData.favorites.forEach((exercise: Exercise) => {
+document.addEventListener('DOMContentLoaded', async () => {
+  fitlogData.favorites.forEach((exercise: SimpleExercise) => {
     $favoritesCardList.appendChild(renderExercises(exercise));
   });
+  fitlogData.exerciseSearchResults.forEach((element) => {
+    $exercisesCardList.appendChild(renderExercises(element));
+  });
+  renderAddToWorkoutForm();
   if (fitlogData.favorites.length === 0)
     $favoritesCta.classList.remove('hidden');
   fitlogData.workouts.forEach((workout: Workout) => {
@@ -782,6 +864,10 @@ document.addEventListener('DOMContentLoaded', () => {
     createDragNDropEventListeners(workout.workoutId);
     createMouseoverEventListeners(workout.workoutId);
   });
+  if (fitlogData.viewing && fitlogData.currentView === 'exercise-details') {
+    await fetchExerciseDetails(fitlogData.viewing);
+  }
+  viewSwap(fitlogData.currentView);
 });
 
 $workoutsSection.addEventListener('click', (event: Event) => {
@@ -805,10 +891,6 @@ $beginBtn.addEventListener('click', () => {
 $searchForm.addEventListener('submit', (event: Event) => {
   event.preventDefault();
   clearCardList();
-  const $exerciseSearch = document.querySelector(
-    '#exercise-search',
-  ) as HTMLInputElement;
-  if (!$exerciseSearch) throw new Error('no exercise search input found');
 
   fetchExerciseSearchData($exerciseSearch.value);
   $searchForm.reset();
@@ -854,67 +936,38 @@ $header.addEventListener('click', (event: Event) => {
   }
 });
 
-$exercisesCardList.addEventListener('click', (event: Event) => {
-  const $eventTarget = event.target as HTMLElement;
-  if ($eventTarget.closest('.card-list > .card')) {
-    const $card = $eventTarget.closest('.card') as HTMLElement;
-    if ($card.dataset.baseId) {
-      const cardBaseId = $card.dataset.baseId;
-      if ($eventTarget.tagName !== 'I') {
-        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
-        if (!exercise) return;
-        fitlogData.viewing = exercise;
-        populateExerciseDetails(exercise);
-        viewSwap('exercise-details');
-      } else if (
-        $eventTarget.tagName === 'I' &&
-        $eventTarget.classList.contains('fa-heart')
-      ) {
-        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
-        if (exercise) handleFavoriteClick(exercise, $eventTarget);
-        fitlogData.viewing = exercise;
-      } else if ($eventTarget.classList.contains('fa-pen-to-square')) {
-        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
-        fitlogData.viewing = exercise;
-        renderAddExerciseForm();
-        $addExerciseModal.showModal();
+$cardLists.forEach(($cardList) => {
+  $cardList.addEventListener('click', async (event: Event) => {
+    const $eventTarget = event.target as HTMLElement;
+    if ($eventTarget.closest('.card-list > .card')) {
+      const $card = $eventTarget.closest('.card') as HTMLElement;
+      if ($card.dataset.baseId) {
+        const cardBaseId = $card.dataset.baseId;
+        if ($eventTarget.tagName !== 'I') {
+          const simpleExercise = findExerciseInCardList(parseInt(cardBaseId));
+          if (!simpleExercise) return;
+          await fetchExerciseDetails(simpleExercise);
+          viewSwap('exercise-details');
+        } else if (
+          $eventTarget.tagName === 'I' &&
+          $eventTarget.classList.contains('fa-heart')
+        ) {
+          const exercise = findExerciseInCardList(parseInt(cardBaseId));
+          if (exercise) handleFavoriteClick(exercise, $eventTarget);
+        } else if ($eventTarget.classList.contains('fa-pen-to-square')) {
+          const exercise = findExerciseInCardList(parseInt(cardBaseId));
+          fitlogData.viewing = exercise;
+          $addExerciseModal.showModal();
+        }
       }
     }
-  }
-});
-
-$favoritesCardList.addEventListener('click', (event: Event) => {
-  const $eventTarget = event.target as HTMLElement;
-  if ($eventTarget.closest('.card-list > .card')) {
-    const $card = $eventTarget.closest('.card') as HTMLElement;
-    if ($card.dataset.baseId) {
-      const cardBaseId = $card.dataset.baseId;
-      if ($eventTarget.tagName !== 'I') {
-        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
-        if (!exercise) return;
-        fitlogData.viewing = exercise;
-        populateExerciseDetails(exercise);
-        viewSwap('exercise-details');
-      } else if (
-        $eventTarget.tagName === 'I' &&
-        $eventTarget.classList.contains('fa-heart')
-      ) {
-        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
-        if (exercise) handleFavoriteClick(exercise, $eventTarget);
-      } else if ($eventTarget.classList.contains('fa-pen-to-square')) {
-        const exercise = findExerciseByBaseId(parseInt(cardBaseId));
-        fitlogData.viewing = exercise;
-        renderAddExerciseForm();
-        $addExerciseModal.showModal();
-      }
-    }
-  }
+  });
 });
 
 $exerciseDetailSection.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
-  const $section = $eventTarget.closest('section.details') as HTMLElement;
-  const exercise = findExerciseByBaseId(
+  const $section = $eventTarget.closest('section.details-view') as HTMLElement;
+  const exercise = findExerciseInCardList(
     parseInt($section.dataset.baseId as string),
   );
   if (
@@ -923,7 +976,6 @@ $exerciseDetailSection.addEventListener('click', (event: Event) => {
   ) {
     if (exercise) handleFavoriteClick(exercise, $eventTarget);
   } else if ($eventTarget.classList.contains('add-exercise-btn')) {
-    renderAddExerciseForm();
     if (exercise) $addExerciseModal.showModal();
   }
 });
@@ -957,17 +1009,14 @@ $newWorkoutForm.addEventListener('submit', (event: Event) => {
   $workoutsSection.appendChild(renderWorkouts(newWorkout));
   createDragNDropEventListeners(newWorkout.workoutId);
   createMouseoverEventListeners(newWorkout.workoutId);
+
+  appendToAddToWorkoutForm(newWorkout);
 });
 
 $addExerciseModal.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
   if ($eventTarget.classList.contains('fa-x')) {
     $addExerciseModal.close();
-    while ($addExerciseForm.hasChildNodes()) {
-      if ($addExerciseForm.firstChild) {
-        $addExerciseForm.removeChild($addExerciseForm.firstChild);
-      }
-    }
   }
 });
 
@@ -991,11 +1040,6 @@ $addExerciseForm.addEventListener('submit', (event: Event): void => {
   });
   $addExerciseForm.reset();
   $addExerciseModal.close();
-  while ($addExerciseForm.hasChildNodes()) {
-    if ($addExerciseForm.firstChild) {
-      $addExerciseForm.removeChild($addExerciseForm.firstChild);
-    }
-  }
   renderAddedExercise(selectedWorkoutIds, currentExercise);
 });
 
