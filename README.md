@@ -14,7 +14,7 @@ As a avid gym goer I wanted to build a simple interface to search for new exerci
 
 ## Live Demo
 
-Try the application live at [https://kepsteen.github.io/front-end-project/](https://kepsteen.github.io/front-end-project/)
+Try the application live at [https://kepsteen.github.io/fitlog/](https://kepsteen.github.io/fitlog/)
 
 ## Features
 
