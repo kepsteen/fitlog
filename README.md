@@ -4,7 +4,7 @@ A front-end JavaScript application for fitness enthusiasts to search for exercis
 
 ## Why I Built This
 
-As a avid gym goer I wanted to build a simple interface to search for new exercises and create my own customized workout plans
+As a avid gym goer, I wanted to build a simple interface to search for new exercises and create my own customized workout plans
 
 ## Technologies Used
 
