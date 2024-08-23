@@ -399,6 +399,9 @@ function renderWorkouts(workout) {
     $exerciseLi.appendChild(xmark);
     $exercisesUl.appendChild($exerciseLi);
   });
+  const $exercisesH3span = document.createElement('span');
+  $exercisesH3span.textContent = ' (Drag exercise to assign)';
+  $exercisesH3.appendChild($exercisesH3span);
   $exercisesDiv.appendChild($exercisesH3);
   $exercisesDiv.appendChild($exercisesUl);
   $workoutDataContainer.appendChild($exercisesDiv);
